@@ -16,7 +16,7 @@ public class MyoConnect extends AppCompatActivity {
     public void onStart(){
         super.onStart();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        //this stuff is just a place holder till we can get a connnection test with the myo
+        //this stuff is just a place holder till we can get a connection test with the myo
         Boolean connected = prefs.getBoolean("Connected", false);
         if (connected){
             prefs.edit().putBoolean("Connected",false).commit();

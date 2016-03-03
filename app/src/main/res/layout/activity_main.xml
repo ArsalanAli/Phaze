@@ -9,7 +9,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="teamb.minicap.phaze.MainActivity"
     android:id="@+id/main"
-    android:background="#424445">
+    android:background="@color/background">
 
     <Button
         android:layout_width="wrap_content"
@@ -20,7 +20,8 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
         android:onClick="connect"
-        android:background="@drawable/button_active" />
+        android:background="@drawable/button_active"
+        android:textColor="@color/button_text"/>
 
     <Button
         android:layout_width="wrap_content"
@@ -28,11 +29,12 @@
         android:text="@string/music"
         android:id="@+id/music"
         android:onClick="music"
-        android:background="@drawable/button_inactive"
+        android:background="@drawable/button_active"
         android:layout_below="@+id/connect"
         android:layout_alignParentStart="true"
         android:layout_marginTop="41dp"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:textColor="@color/button_text"/>
 
     <Button
         android:layout_width="wrap_content"
@@ -40,11 +42,12 @@
         android:text="@string/video"
         android:id="@+id/video"
         android:onClick="video"
-        android:background="@drawable/button_inactive"
+        android:background="@drawable/button_active"
         android:layout_below="@+id/music"
         android:layout_alignParentStart="true"
         android:layout_marginTop="42dp"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:textColor="@color/button_text"/>
 
     <Button
         android:layout_width="wrap_content"
@@ -52,19 +55,21 @@
         android:text="@string/gallery"
         android:id="@+id/gallery"
         android:onClick="gallery"
-        android:background="@drawable/button_inactive"
+        android:background="@drawable/button_active"
         android:layout_below="@+id/video"
         android:layout_alignParentStart="true"
         android:layout_marginTop="48dp"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:textColor="@color/button_text"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/settings"
         android:id="@+id/settings"
+        android:onClick="settings"
+        android:background="@drawable/button_active"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:onClick="settings"
-        android:background="@drawable/button_active" />
+        android:textColor="@color/button_text"/>
 </RelativeLayout>
