@@ -6,4 +6,10 @@
     <string name="video">Video</string>
     <string name="gallery">Gallery</string>
     <string name="settings">Settings</string>
+    <string-array name="sortMusic_array">
+        <item>Track Name</item>
+        <item>Artist</item>
+        <item>Album</item>
+        <item>Year</item>
+    </string-array>
 </resources>

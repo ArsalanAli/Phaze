@@ -143,5 +143,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, Settings.class);
         startActivity(intent);
     }
+
 }
 
