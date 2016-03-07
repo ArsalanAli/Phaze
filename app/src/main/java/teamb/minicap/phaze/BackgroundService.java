@@ -2,6 +2,11 @@
  * Copyright (C) 2014 Thalmic Labs Inc.
  * Distributed under the Myo SDK license agreement. See LICENSE.txt for details.
  */
+/*
+
+
+
+
 
 package teamb.minicap.phaze;
 
@@ -77,3 +82,9 @@ public class BackgroundService extends Service {
     }
 }
 
+
+
+*/
+
+
+//commented out so that i could compile -alex PS sorry sarah

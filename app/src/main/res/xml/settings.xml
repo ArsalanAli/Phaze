@@ -1,10 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <ListPreference
-        android:key="Theme"
-        android:title="Theme"
-        android:entries="@array/theme"
-        android:entryValues="@array/theme"
-        android:defaultValue="Default"
+    <PreferenceCategory
+        android:title="Appearance"
+        android:key="Appearance_settings"
         />
+
+        //<!-- opens another nested sub screen -->
+        <PreferenceScreen
+            android:key="sub_themes"
+            android:title="Themes Submenu"
+            android:persistent="false">
+
+            <ListPreference
+                android:key="Themes"
+                android:title="Themes"
+                android:entries="@array/theme"
+                android:entryValues="@array/theme"
+                android:defaultValue="Default"
+                />
+
+        </PreferenceScreen>
+
+    <PreferenceCategory
+        android:title="Music Behavior"
+        android:key="Music_behavior_settings"
+        />
+    <PreferenceCategory
+        android:title="Video Behavior"
+        android:key="Video_behavior_settings"
+        />
+    <PreferenceCategory
+    android:title="Gallery Behavior"
+    android:key="Gallery_behavior_settings"
+        />
+    />
 </PreferenceScreen>
