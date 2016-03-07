@@ -3,6 +3,8 @@ package teamb.minicap.phaze;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+//Video player
+
 public class Video extends AppCompatActivity {
 
     @Override

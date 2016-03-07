@@ -24,8 +24,12 @@ import android.view.View;
 import java.util.ArrayList;
 import teamb.minicap.phaze.Service_Music.MusicBinder;
 
-public class Music extends AppCompatActivity {
+/*Pulls songs from phone,
+sends songs to be sorted into listview,
+calls mediaplayer service
+ */
 
+public class Music extends AppCompatActivity {
 
     private ArrayList<Tracks> trackList;
     private ListView trackView;
