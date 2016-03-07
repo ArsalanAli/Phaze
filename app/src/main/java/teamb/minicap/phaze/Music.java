@@ -43,7 +43,7 @@ public class Music extends AppCompatActivity {
         setContentView(R.layout.activity_music);
 
         trackView = (ListView)findViewById(R.id.trackView);
-        trackList = new ArrayList<Tracks>();
+        trackList = new ArrayList<>();
 
         retrieveMedia();
 
@@ -108,15 +108,14 @@ public class Music extends AppCompatActivity {
                 long thisId = musicCursor.getLong(idColumn);
                 String thisTitle = musicCursor.getString(titleColumn);
                 String thisArtist = musicCursor.getString(artistColumn);
-                String thisYear = musicCursor.getString(yearColumn);
-                String thisAlbum = musicCursor.getString(albumColumn);
-                trackList.add(new Tracks(thisId, thisTitle, thisArtist, thisAlbum, thisYear));
+
+                trackList.add(new Tracks(thisId, thisTitle, thisArtist));
             }
             while (musicCursor.moveToNext());
         }
     }
 
-    public void songPicked(View view){
+    public void trackChosen(View view){
         musicSrv.setSong(Integer.parseInt(view.getTag().toString()));
         musicSrv.playSong();
     }

@@ -6,9 +6,7 @@
     android:orientation="vertical"
     android:padding="5dp" >
 
-    <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+
     <TextView
         android:id="@+id/track_title"
         android:layout_width="fill_parent"
