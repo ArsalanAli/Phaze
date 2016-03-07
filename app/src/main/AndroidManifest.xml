@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="teamb.minicap.phaze">
+
+    //Give permission to let music play while system is idle
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    //Give permission to access SD card
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <application
 
@@ -15,7 +18,8 @@
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
+                //Services Service_Music in order to allow music to play in the background
+                <service android:name="teamb.minicap.phaze.Service_Music" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -25,9 +29,9 @@
         <activity android:name=".Video" />
         <activity android:name=".Gallery" />
         <activity android:name=".Settings"></activity>
-        <!-- ATTENTION: This was auto-generated to add Google Play services to your project for
-             App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
-        <service android:name="teamb.minicap.phaze.Service_Music" />
+
+
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />

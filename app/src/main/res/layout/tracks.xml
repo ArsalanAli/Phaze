@@ -6,9 +6,14 @@
     android:orientation="vertical"
     android:padding="5dp" >
 
-    <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+    //Will be for album art
+
+
+    */
+    These next text views are to be used in conjunction with the listview in
+    order to display the songs. This will be done by linking them to the appropriate song
+    in media.
+    */
     <TextView
         android:id="@+id/track_title"
         android:layout_width="fill_parent"

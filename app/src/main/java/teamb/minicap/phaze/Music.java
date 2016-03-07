@@ -26,12 +26,13 @@ import teamb.minicap.phaze.Service_Music.MusicBinder;
 
 public class Music extends AppCompatActivity {
 
-
+    //Creates an array "trackList" to hold all the tracks
     private ArrayList<Tracks> trackList;
+    //Defines the list where we'll display the tracks
     private ListView trackView;
     private Service_Music musicSrv;
     private Intent playIntent;
-    private boolean musicBound=false;
+    private boolean musicBound = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -112,7 +113,7 @@ public class Music extends AppCompatActivity {
         }
     }
 
-    public void songPicked(View view){
+    public void trackChosen(View view){
         musicSrv.setSong(Integer.parseInt(view.getTag().toString()));
         musicSrv.playSong();
     }

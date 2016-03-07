@@ -41,7 +41,6 @@ public class Service_Music extends Service implements
     }
 
     public void initMusicPlayer(){
-        player = new MediaPlayer();
         player.setWakeMode(getApplicationContext(),
                 PowerManager.PARTIAL_WAKE_LOCK);
         player.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -75,14 +74,18 @@ public class Service_Music extends Service implements
         }
     }
 
-    public IBinder onBind(Intent intent) {
-        return musicBind;
+    @Override
+    public IBinder onBind(Intent intent) {return musicBind;
         }
 
     public boolean onUnbind(Intent intent){
         player.stop();
         player.release();
         return false;
+    }
+
+    public void setSong(int songIndex){
+        songPosn = songIndex;
     }
 
     public void playSong(){
@@ -105,7 +108,5 @@ public class Service_Music extends Service implements
         player.prepareAsync();
     }
 
-    public void setSong(int songIndex){
-        songPosn=songIndex;
-    }
+
 }
