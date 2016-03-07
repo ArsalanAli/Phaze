@@ -42,21 +42,14 @@ public class MusicAdapter extends BaseAdapter {
         //map to song layout
         LinearLayout trackLayout = (LinearLayout)details.inflate
                 (R.layout.tracks, parent, false);
-        //get title and artist views
         TextView trackView = (TextView)trackLayout.findViewById(R.id.track_title);
         TextView artistView = (TextView)trackLayout.findViewById(R.id.track_artist);
-        TextView albumView = (TextView)trackLayout.findViewById(R.id.track_album);
-        TextView yearView = (TextView)trackLayout.findViewById(R.id.track_year);
-        //get song using position
         Tracks current = tracks.get(position);
-        //get title and artist strings
         trackView.setText(current.getTitle());
         artistView.setText(current.getArtist());
-        //set position as tag
         trackLayout.setTag(position);
         return trackLayout;
     }
-
 }
 
 
