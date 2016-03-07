@@ -15,9 +15,6 @@ import android.os.PowerManager;
 import android.util.Log;
 
 
-/**
- * Created by Kareem on 2016-03-05.
- */
 public class Service_Music extends Service implements
         MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener,
         MediaPlayer.OnCompletionListener {
@@ -36,7 +33,7 @@ public class Service_Music extends Service implements
          initMusicPlayer();
         //initialize position
         songPosn=0;
-//create player
+        //create player
         player = new MediaPlayer();
     }
 
@@ -56,7 +53,6 @@ public class Service_Music extends Service implements
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-
     }
 
     @Override

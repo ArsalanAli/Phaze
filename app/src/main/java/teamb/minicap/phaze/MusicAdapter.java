@@ -9,9 +9,10 @@ import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-/**
- * Created by Kareem on 2016-03-05.
- */
+//Whenever a listview is created
+//an adapter is required in order
+//to modify each entry separately
+
 public class MusicAdapter extends BaseAdapter {
 
     private ArrayList<Tracks> tracks;
