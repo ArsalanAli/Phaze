@@ -24,12 +24,8 @@ import android.view.View;
 import java.util.ArrayList;
 import teamb.minicap.phaze.Service_Music.MusicBinder;
 
-/*Pulls songs from phone,
-sends songs to be sorted into listview,
-calls mediaplayer service
- */
-
 public class Music extends AppCompatActivity {
+
 
     private ArrayList<Tracks> trackList;
     private ListView trackView;
@@ -43,7 +39,7 @@ public class Music extends AppCompatActivity {
         setContentView(R.layout.activity_music);
 
         trackView = (ListView)findViewById(R.id.trackView);
-        trackList = new ArrayList<>();
+        trackList = new ArrayList<Tracks>();
 
         retrieveMedia();
 
@@ -108,14 +104,15 @@ public class Music extends AppCompatActivity {
                 long thisId = musicCursor.getLong(idColumn);
                 String thisTitle = musicCursor.getString(titleColumn);
                 String thisArtist = musicCursor.getString(artistColumn);
-
-                trackList.add(new Tracks(thisId, thisTitle, thisArtist));
+                String thisYear = musicCursor.getString(yearColumn);
+                String thisAlbum = musicCursor.getString(albumColumn);
+                trackList.add(new Tracks(thisId, thisTitle, thisArtist, thisAlbum, thisYear));
             }
             while (musicCursor.moveToNext());
         }
     }
 
-    public void trackChosen(View view){
+    public void songPicked(View view){
         musicSrv.setSong(Integer.parseInt(view.getTag().toString()));
         musicSrv.playSong();
     }

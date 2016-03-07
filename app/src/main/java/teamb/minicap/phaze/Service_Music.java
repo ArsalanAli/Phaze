@@ -15,6 +15,9 @@ import android.os.PowerManager;
 import android.util.Log;
 
 
+/**
+ * Created by Kareem on 2016-03-05.
+ */
 public class Service_Music extends Service implements
         MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener,
         MediaPlayer.OnCompletionListener {
@@ -33,12 +36,12 @@ public class Service_Music extends Service implements
          initMusicPlayer();
         //initialize position
         songPosn=0;
-        //create player
+//create player
         player = new MediaPlayer();
     }
 
     public void initMusicPlayer(){
-
+        player = new MediaPlayer();
         player.setWakeMode(getApplicationContext(),
                 PowerManager.PARTIAL_WAKE_LOCK);
         player.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -53,6 +56,7 @@ public class Service_Music extends Service implements
 
     @Override
     public void onCompletion(MediaPlayer mp) {
+
     }
 
     @Override
@@ -102,6 +106,6 @@ public class Service_Music extends Service implements
     }
 
     public void setSong(int songIndex){
-        songPosn = songIndex;
+        songPosn=songIndex;
     }
 }
