@@ -21,7 +21,7 @@ public class BackgroundService extends Service {
     private Toast mToast;
     // Classes that inherit from AbstractDeviceListener can be used to receive events from Myo devices.
     // If you do not override an event, the default behavior is to do nothing.
-    private DeviceListener mListener = new AbstractDeviceListener() {
+    /*private DeviceListener mListener = new AbstractDeviceListener() {
         @Override
         public void onConnect(Myo myo, long timestamp) {
             showToast(getString(R.string.connected));
@@ -37,7 +37,7 @@ public class BackgroundService extends Service {
             // Show the name of the pose in a toast.
             showToast(getString(R.string.pose, pose.toString()));
         }
-    };
+    };*/
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -46,7 +46,7 @@ public class BackgroundService extends Service {
     public void onCreate() {
         super.onCreate();
         // First, we initialize the Hub singleton with an application identifier.
-        Hub hub = Hub.getInstance();
+        /*Hub hub = Hub.getInstance();
         if (!hub.init(this, getPackageName())) {
             showToast("Couldn't initialize Hub");
             stopSelf();
@@ -57,14 +57,14 @@ public class BackgroundService extends Service {
         // Next, register for DeviceListener callbacks.
         hub.addListener(mListener);
         // Finally, scan for Myo devices and connect to the first one found that is very near.
-        hub.attachToAdjacentMyo();
+        hub.attachToAdjacentMyo();*/
     }
     @Override
     public void onDestroy() {
         super.onDestroy();
         // We don't want any callbacks when the Service is gone, so unregister the listener.
-        Hub.getInstance().removeListener(mListener);
-        Hub.getInstance().shutdown();
+       /* Hub.getInstance().removeListener(mListener);
+        Hub.getInstance().shutdown();*/
     }
     private void showToast(String text) {
         Log.w(TAG, text);
