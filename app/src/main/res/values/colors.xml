@@ -4,7 +4,10 @@
     <color name="colorPrimaryDark">#424445</color>
     <color name="colorAccent">#303F9F</color>
     <color name="button_text">#000000</color>
+    <color name="button_text_light">#33b5e5</color>
     <color name="active_color">#cacbcb</color>
+    <color name="active_color_light">#128db6</color>
     <color name="inactive_color">#535353</color>
+    <color name="inactive_color_light">#8f9393</color>
     <color name="background">#424445</color>
 </resources>

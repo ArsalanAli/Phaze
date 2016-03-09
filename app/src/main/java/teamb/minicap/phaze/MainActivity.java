@@ -55,70 +55,99 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        String theme = prefs.getString("Theme", "Default");
-        /*switch (theme) {
-            case "Dark":
-                prefs.edit().putInt("button_text").commit();
-                prefs.edit().putInt("inactive_color").commit();
-                prefs.edit().putInt("active_color").commit();
-                prefs.edit().putInt("background").commit();
-                break;
-            case "Light":
-                prefs.edit().putLong("button_text", 0xFF33b5e5).commit();
-                prefs.edit().putInt("inactive_color", 0xFF8f9393).commit();
-                prefs.edit().putInt("active_color", 0xFF128db6).commit();
-                prefs.edit().putInt("background", 0xFF33b5e5).commit();
-                break;
-            case "Default":
-                prefs.edit().putInt("button_text",0xFF000000).commit();
-                prefs.edit().putInt("inactive_color",0xFF535353).commit();
-                prefs.edit().putInt("active_color",0xFFcacbcb).commit();
-                prefs.edit().putInt("background",0xFF424445).commit();
-                break;
-        }*/
-        Boolean connected = prefs.getBoolean("Connected", false);
-        if (android.os.Build.VERSION.SDK_INT >= 21) {
-            if (connected) {
-                mbutton.setEnabled(true);
-                vbutton.setEnabled(true);
-                gbutton.setEnabled(true);
-                findViewById(R.id.music).setBackground(getResources().getDrawable(R.drawable.button_active, null));
-                findViewById(R.id.video).setBackground(getResources().getDrawable(R.drawable.button_active, null));
-                findViewById(R.id.gallery).setBackground(getResources().getDrawable(R.drawable.button_active, null));
-            } else {
-                mbutton.setEnabled(false);
-                vbutton.setEnabled(false);
-                gbutton.setEnabled(false);
-                findViewById(R.id.music).setBackground(getResources().getDrawable(R.drawable.button_inactive, null));
-                findViewById(R.id.video).setBackground(getResources().getDrawable(R.drawable.button_inactive, null));
-                findViewById(R.id.gallery).setBackground(getResources().getDrawable(R.drawable.button_inactive, null));
-            }
-        }
-        else{
-            if (connected) {
-                mbutton.setEnabled(true);
-                vbutton.setEnabled(true);
-                gbutton.setEnabled(true);
-                findViewById(R.id.music).setBackground(getResources().getDrawable(R.drawable.button_active));
-                findViewById(R.id.video).setBackground(getResources().getDrawable(R.drawable.button_active));
-                findViewById(R.id.gallery).setBackground(getResources().getDrawable(R.drawable.button_active));
-            } else {
-                mbutton.setEnabled(false);
-                vbutton.setEnabled(false);
-                gbutton.setEnabled(false);
-                findViewById(R.id.music).setBackground(getResources().getDrawable(R.drawable.button_inactive));
-                findViewById(R.id.video).setBackground(getResources().getDrawable(R.drawable.button_inactive));
-                findViewById(R.id.gallery).setBackground(getResources().getDrawable(R.drawable.button_inactive));
-            }
-        }
     }
     @Override
     public void onResume(){
         super.onResume();
-
-
+        String theme = prefs.getString("Themes", "Default");
+        switch (theme) {
+            case "Dark":
+                themechange(2);
+                break;
+            case "Light":
+                themechange(1);
+                break;
+            case "Default":
+                themechange(0);
+                break;
+        }
     }
-
+    public void themechange(int i){
+        Boolean connected = prefs.getBoolean("Connected", false);
+        int button_text = 0;
+        int button_active = 0;
+        int button_inactive = 0;
+        switch (i) {
+            case 0:
+                findViewById(R.id.main).setBackgroundColor(Color.argb(255, 66, 68, 69));
+                button_text = R.color.button_text;
+                button_active = R.drawable.button_active;
+                button_inactive = R.drawable.button_inactive;
+                break;
+            case 1:
+                findViewById(R.id.main).setBackgroundColor(Color.argb(255, 51, 181, 229));
+                button_text = R.color.button_text_light;
+                button_active = R.drawable.button_active_light;
+                button_inactive = R.drawable.button_inactive_light;
+                break;
+            case 2:
+                break;
+        }
+        if (android.os.Build.VERSION.SDK_INT >= 23) {
+            cbutton.setTextColor(ContextCompat.getColor(this,button_text));
+            sbutton.setTextColor(ContextCompat.getColor(this,button_text));
+            mbutton.setTextColor(ContextCompat.getColor(this,button_text));
+            vbutton.setTextColor(ContextCompat.getColor(this,button_text));
+            gbutton.setTextColor(ContextCompat.getColor(this,button_text));
+        }
+        else {
+            cbutton.setTextColor(getResources().getColor(button_text));
+            sbutton.setTextColor(getResources().getColor(button_text));
+            mbutton.setTextColor(getResources().getColor(button_text));
+            vbutton.setTextColor(getResources().getColor(button_text));
+            gbutton.setTextColor(getResources().getColor(button_text));
+        }
+        if(android.os.Build.VERSION.SDK_INT >= 21){
+            cbutton.setBackground(getResources().getDrawable(button_active, null));
+            sbutton.setBackground(getResources().getDrawable(button_active, null));
+            if (connected){
+                mbutton.setEnabled(true);
+                vbutton.setEnabled(true);
+                gbutton.setEnabled(true);
+                mbutton.setBackground(getResources().getDrawable(button_active,null));
+                vbutton.setBackground(getResources().getDrawable(button_active,null));
+                gbutton.setBackground(getResources().getDrawable(button_active,null));
+            }
+            else{
+                mbutton.setEnabled(false);
+                vbutton.setEnabled(false);
+                gbutton.setEnabled(false);
+                mbutton.setBackground(getResources().getDrawable(button_inactive,null));
+                vbutton.setBackground(getResources().getDrawable(button_inactive,null));
+                gbutton.setBackground(getResources().getDrawable(button_inactive,null));
+            }
+        }
+        else{
+            cbutton.setBackground(getResources().getDrawable(button_active));
+            sbutton.setBackground(getResources().getDrawable(button_active));
+            if (connected){
+                mbutton.setEnabled(true);
+                vbutton.setEnabled(true);
+                gbutton.setEnabled(true);
+                mbutton.setBackground(getResources().getDrawable(button_active));
+                vbutton.setBackground(getResources().getDrawable(button_active));
+                gbutton.setBackground(getResources().getDrawable(button_active));
+            }
+            else{
+                mbutton.setEnabled(false);
+                vbutton.setEnabled(false);
+                gbutton.setEnabled(false);
+                mbutton.setBackground(getResources().getDrawable(button_inactive));
+                vbutton.setBackground(getResources().getDrawable(button_inactive));
+                gbutton.setBackground(getResources().getDrawable(button_inactive));
+            }
+        }
+    }
     public void connect(View view) {
         Intent intent = new Intent(MainActivity.this, MyoConnect.class);
         startActivity(intent);
