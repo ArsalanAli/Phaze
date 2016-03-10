@@ -38,6 +38,7 @@ public class Music extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_music);
 
+
         trackView = (ListView)findViewById(R.id.trackView);
         trackList = new ArrayList<Tracks>();
 
@@ -112,7 +113,7 @@ public class Music extends AppCompatActivity {
         }
     }
 
-    public void songPicked(View view){
+    public void trackChosen(View view){
         musicSrv.setSong(Integer.parseInt(view.getTag().toString()));
         musicSrv.playSong();
     }

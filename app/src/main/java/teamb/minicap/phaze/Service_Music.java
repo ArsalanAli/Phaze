@@ -30,7 +30,7 @@ public class Service_Music extends Service implements
     private int songPosn;
     private final IBinder musicBind = new MusicBinder();
 
-        public void onCreate(){
+    public void onCreate(){
         //create the service
          super.onCreate();
          initMusicPlayer();
