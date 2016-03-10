@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         String theme = prefs.getString("Themes", "Default");
         switch (theme) {
             case "Dark":
-                themechange(2);
+                //themechange(2);
                 break;
             case "Light":
                 themechange(1);
