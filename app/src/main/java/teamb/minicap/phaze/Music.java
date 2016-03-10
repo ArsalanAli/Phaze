@@ -31,7 +31,7 @@ public class Music extends AppCompatActivity {
     private ListView trackView;
     private Service_Music musicSrv;
     private Intent playIntent;
-    private boolean musicBound=false;
+    private boolean musicBound = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,7 +60,7 @@ public class Music extends AppCompatActivity {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            Service_Music.MusicBinder binder = (Service_Music.MusicBinder)service;
+            MusicBinder binder = (MusicBinder)service;
             //get service
             musicSrv = binder.getService();
             //pass list
