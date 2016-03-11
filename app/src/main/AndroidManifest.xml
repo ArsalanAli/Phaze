@@ -15,16 +15,16 @@
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <service android:name="teamb.minicap.phaze.Service_Music" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <service android:name=".Service_Music"/>
         <activity android:name=".MyoConnect" />
-        <activity android:name=".Music" />
+        <activity android:name=".Music"/>
         <activity android:name=".Video" />
         <activity android:name=".Gallery" />
-        <activity android:name=".Settings"></activity>
+        <activity android:name=".Settings"/>
+
         <!-- ATTENTION: This was auto-generated to add Google Play services to your project for
              App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
 
