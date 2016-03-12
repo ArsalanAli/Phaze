@@ -13,13 +13,26 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.Manifest;
+import android.widget.Toast;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.thalmic.myo.AbstractDeviceListener;
+import com.thalmic.myo.Arm;
+import com.thalmic.myo.DeviceListener;
+import com.thalmic.myo.Hub;
+import com.thalmic.myo.Myo;
+import com.thalmic.myo.Pose;
+import com.thalmic.myo.XDirection;
+import com.thalmic.myo.scanner.ScanActivity;
 
 public class MainActivity extends AppCompatActivity {
     SharedPreferences prefs;
@@ -28,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     Button vbutton;
     Button gbutton;
     Button sbutton;
+    Hub hub;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +51,21 @@ public class MainActivity extends AppCompatActivity {
             if (ContextCompat.checkSelfPermission(this,Manifest.permission.READ_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_GRANTED){
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        Request_Result);
+            }
+            if (ContextCompat.checkSelfPermission(this,Manifest.permission.BLUETOOTH)
+                    != PackageManager.PERMISSION_GRANTED){
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH},
+                        Request_Result);
+            }
+            if (ContextCompat.checkSelfPermission(this,Manifest.permission.BLUETOOTH_ADMIN)
+                    != PackageManager.PERMISSION_GRANTED){
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_ADMIN},
+                        Request_Result);
+            }
+            if (ContextCompat.checkSelfPermission(this,Manifest.permission.INTERNET)
+                    != PackageManager.PERMISSION_GRANTED){
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET},
                         Request_Result);
             }
         }
@@ -53,6 +82,14 @@ public class MainActivity extends AppCompatActivity {
         vbutton.setTypeface(PTfont);
         gbutton.setTypeface(PTfont);
         sbutton.setTypeface(PTfont);
+
+        hub = Hub.getInstance();
+        if (!hub.init(this)) {
+            Toast.makeText(this, "Couldn't initialize Hub", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
     }
 
     /*IDs for everything on main activity
@@ -181,6 +218,104 @@ public class MainActivity extends AppCompatActivity {
 
     public void settings(View view) {
         Intent intent = new Intent(MainActivity.this, Settings.class);
+        startActivity(intent);
+    }
+
+
+    public DeviceListener mListener = new AbstractDeviceListener() {
+        @Override
+        public void onConnect(Myo myo, long timestamp) {
+
+        }
+
+
+        @Override
+        public void onDisconnect(Myo myo, long timestamp) {
+
+        }
+
+
+        @Override
+        public void onArmSync(Myo myo, long timestamp, Arm arm, XDirection xDirection) {
+        }
+
+
+        @Override
+        public void onArmUnsync(Myo myo, long timestamp) {
+            //mTextView.setText(R.string.hello_world);
+        }
+
+
+        @Override
+        public void onUnlock(Myo myo, long timestamp) {
+
+        }
+
+        @Override
+        public void onLock(Myo myo, long timestamp) {
+
+        }
+        // onPose() is called whenever a Myo provides a new pose.
+        @Override
+        public void onPose(Myo myo, long timestamp, Pose pose) {
+            // Handle the cases of the Pose enumeration, and change the text of the text view
+            // based on the pose we receive.
+            switch (pose) {
+                case REST:
+                case DOUBLE_TAP:
+                    myo.unlock(Myo.UnlockType.TIMED);
+                case FIST:
+                    music(null);
+                    break;
+                case WAVE_IN:
+                    gallery(null);
+                    break;
+                case WAVE_OUT:
+                    video(null);
+                    break;
+                case FINGERS_SPREAD:
+                    settings(null);
+                    break;
+            }
+
+            if (pose != Pose.UNKNOWN && pose != Pose.REST) {
+                // Tell the Myo to stay unlocked until told otherwise. We do that here so you can
+                // hold the poses without the Myo becoming locked.
+                myo.unlock(Myo.UnlockType.HOLD);
+
+                // Notify the Myo that the pose has resulted in an action, in this case changing
+                // the text on the screen. The Myo will vibrate.
+                myo.notifyUserAction();
+            } else {
+                // Tell the Myo to stay unlocked only for a short period. This allows the Myo to
+                // stay unlocked while poses are being performed, but lock after inactivity.
+                myo.unlock(Myo.UnlockType.TIMED);
+            }
+        }
+
+    };
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_music, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (R.id.myosdk__action_scan == id) {
+            onScanActionSelected();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void onScanActionSelected() {
+        // Launch the ScanActivity to scan for Myos to connect to.
+        Intent intent = new Intent(this, ScanActivity.class);
         startActivity(intent);
     }
 
