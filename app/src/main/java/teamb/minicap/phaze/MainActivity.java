@@ -47,27 +47,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         int Request_Result = 1;
+        String perms[] = new String [2];
         if (android.os.Build.VERSION.SDK_INT >= 23){
             if (ContextCompat.checkSelfPermission(this,Manifest.permission.READ_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_GRANTED){
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                        Request_Result);
+                perms[0] = Manifest.permission.READ_EXTERNAL_STORAGE;
             }
-            if (ContextCompat.checkSelfPermission(this,Manifest.permission.BLUETOOTH)
+            if (ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION)
                     != PackageManager.PERMISSION_GRANTED){
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH},
-                        Request_Result);
+                perms[1] = Manifest.permission.ACCESS_FINE_LOCATION;
             }
-            if (ContextCompat.checkSelfPermission(this,Manifest.permission.BLUETOOTH_ADMIN)
-                    != PackageManager.PERMISSION_GRANTED){
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_ADMIN},
-                        Request_Result);
-            }
-            if (ContextCompat.checkSelfPermission(this,Manifest.permission.INTERNET)
-                    != PackageManager.PERMISSION_GRANTED){
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET},
-                        Request_Result);
-            }
+            ActivityCompat.requestPermissions(this, perms, Request_Result);
         }
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         setContentView(R.layout.activity_main);
@@ -197,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     public void connect(View view) {
-        Intent intent = new Intent(MainActivity.this, MyoConnect.class);
+        Intent intent = new Intent(MainActivity.this, ScanActivity.class);
         startActivity(intent);
     }
 
