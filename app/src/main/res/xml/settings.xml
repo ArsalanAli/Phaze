@@ -4,36 +4,58 @@
         android:title="Appearance"
         android:key="Appearance_settings"
         />
-
-        //<!-- opens another nested sub screen -->
-        <PreferenceScreen
-            android:key="sub_themes"
-            android:title="Themes Submenu"
-            android:persistent="false">
-
-            <ListPreference
-                android:key="Themes"
-                android:title="Themes"
-                android:entries="@array/theme"
-                android:entryValues="@array/theme"
-                android:defaultValue="Default"
-                />
-
-        </PreferenceScreen>
-
+    <ListPreference
+        android:key="Themes"
+        android:title="Themes"
+        android:entries="@array/theme"
+        android:entryValues="@array/theme"
+        android:defaultValue="Default"
+        />
+//--------------------------------------------------------
     <PreferenceCategory
         android:title="Music Behavior"
         android:key="Music_behavior_settings"
         />
+    <ListPreference
+        android:key="headset_on_unplug"
+        android:title="On Unplug Action"
+        android:summary="Choose what happens when the headset hack is unplugged"
+        android:defaultValue="Nothing"
+        android:entries="@array/unplug"
+        android:entryValues="@array/unplug"
+        />
+    //opens another nested sub screen
+    <PreferenceScreen
+        android:key="adv_music"
+        android:title="Advanced Options"
+        android:persistent="false">
+    </PreferenceScreen>
+
+//--------------------------------------------------------
     <PreferenceCategory
         android:title="Video Behavior"
         android:key="Video_behavior_settings"
         />
+    //opens another nested sub screen
+    <PreferenceScreen
+        android:key="adv_vid"
+        android:title="Advanced Options"
+        android:persistent="false">
+    </PreferenceScreen>
+
+//--------------------------------------------------------
     <PreferenceCategory
     android:title="Gallery Behavior"
     android:key="Gallery_behavior_settings"
         />
-    />
-    //testforbranchupdate
-    //created branch for alex successfully this time
+    //opens another nested sub screen
+    <PreferenceScreen
+        android:key="adv_gal"
+        android:title="Advanced Options"
+        android:persistent="false">
+    </PreferenceScreen>
+
+
+
+
 </PreferenceScreen>
