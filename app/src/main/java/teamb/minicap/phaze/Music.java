@@ -1,8 +1,12 @@
 package teamb.minicap.phaze;
 
+import android.Manifest;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.media.session.MediaController;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -28,6 +32,9 @@ import java.util.ArrayList;
 import teamb.minicap.phaze.Service_Music.MusicBinder;
 import android.widget.MediaController.MediaPlayerControl;
 
+import com.thalmic.myo.DeviceListener;
+import com.thalmic.myo.Myo;
+
 
 public class Music extends AppCompatActivity implements MediaPlayerControl {
 
@@ -39,6 +46,9 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
     private boolean musicBound = false;
     private MusicController controller;
     private boolean paused=false, playbackPaused=false;
+    private Intent MyoIntent;
+    private BackgroundService MyoSrvc;
+    private Boolean MyoBound;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -87,6 +97,10 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
             case R.id.action_end:
                 stopService(playIntent);
                 musicSrv=null;
+                MyoSrvc.disconnect();
+                unbindService(MyoConnection);
+                stopService(MyoIntent);
+                MyoIntent = null;
                 System.exit(0);
                 break;
 
@@ -110,7 +124,21 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
             musicBound = false;
         }
     };
+    private ServiceConnection MyoConnection = new ServiceConnection(){
 
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            BackgroundService.MyoBinder binder = (BackgroundService.MyoBinder)service;
+            //get service
+            MyoSrvc = binder.getService();
+            MyoBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            MyoBound = false;
+        }
+    };
 
     @Override
     protected void onStart() {
@@ -121,9 +149,21 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
             startService(playIntent);
 
         }
+        if(MyoIntent==null){
+            MyoIntent = new Intent(this, BackgroundService.class);
+            bindService(MyoIntent, MyoConnection, Context.BIND_AUTO_CREATE);
+            startService(MyoIntent);
+        }
     }
 
     public void retrieveMedia(){
+        int request = 0;
+        if (android.os.Build.VERSION.SDK_INT >= 23) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, request);
+            }
+        }
         ContentResolver musicResolver = getContentResolver();
         Uri musicUri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         Cursor musicCursor = musicResolver.query(musicUri, null, null, null, null);
@@ -275,4 +315,5 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
         controller.hide();
         super.onStop();
     }
+
 }

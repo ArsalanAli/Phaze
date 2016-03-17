@@ -2,8 +2,10 @@ package teamb.minicap.phaze;
 
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -11,6 +13,7 @@ import android.graphics.Typeface;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -44,7 +47,8 @@ public class MainActivity extends AppCompatActivity {
     Button vbutton;
     Button gbutton;
     Button sbutton;
-    Hub hub;
+    Button dcbutton;
+
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -54,6 +58,9 @@ public class MainActivity extends AppCompatActivity {
     private AudioManager MuteManager;
 
     private boolean headsetConnected = false;
+    private Intent MyoIntent;
+    private BackgroundService MyoSrvc;
+    private Boolean MyoBound;
 
     /*public void onReceive(Context context, Intent intent) {
         if (intent.hasExtra("state")){
@@ -69,17 +76,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         int Request_Result = 1;
-        String perms[] = new String [2];
         if (android.os.Build.VERSION.SDK_INT >= 23){
-            if (ContextCompat.checkSelfPermission(this,Manifest.permission.READ_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED){
-                perms[0] = Manifest.permission.READ_EXTERNAL_STORAGE;
-            }
             if (ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION)
                     != PackageManager.PERMISSION_GRANTED){
-                perms[1] = Manifest.permission.ACCESS_FINE_LOCATION;
+                ActivityCompat.requestPermissions(this ,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},Request_Result);
             }
-            ActivityCompat.requestPermissions(this, perms, Request_Result);
+        }
+        if (android.os.Build.VERSION.SDK_INT >= 23) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, Request_Result);
+            }
         }
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         setContentView(R.layout.activity_main);
@@ -89,25 +96,37 @@ public class MainActivity extends AppCompatActivity {
         vbutton = (Button) findViewById(R.id.video);
         gbutton = (Button) findViewById(R.id.gallery);
         sbutton = (Button) findViewById(R.id.settings);
+        dcbutton = (Button) findViewById(R.id.disconnect);
         cbutton.setTypeface(PTfont);
         mbutton.setTypeface(PTfont);
         vbutton.setTypeface(PTfont);
         gbutton.setTypeface(PTfont);
         sbutton.setTypeface(PTfont);
+        dcbutton.setTypeface(PTfont);
 
-        hub = Hub.getInstance();
-        if (!hub.init(this)) {
-            Toast.makeText(this, "Couldn't initialize Hub", Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
+
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
         MuteManager=(AudioManager)getSystemService(Context.AUDIO_SERVICE);
     }
+    private ServiceConnection MyoConnection = new ServiceConnection(){
 
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            BackgroundService.MyoBinder binder = (BackgroundService.MyoBinder)service;
+            //get service
+            MyoSrvc = binder.getService();
+            MyoBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            MyoSrvc = null;
+            MyoBound = false;
+        }
+    };
     /*IDs for everything on main activity
     background: main
     Connect to Myo button: connect
@@ -200,16 +219,19 @@ public class MainActivity extends AppCompatActivity {
             mbutton.setTextColor(ContextCompat.getColor(this, button_text));
             vbutton.setTextColor(ContextCompat.getColor(this, button_text));
             gbutton.setTextColor(ContextCompat.getColor(this, button_text));
+            dcbutton.setTextColor(ContextCompat.getColor(this, button_text));
         } else {
             cbutton.setTextColor(getResources().getColor(button_text));
             sbutton.setTextColor(getResources().getColor(button_text));
             mbutton.setTextColor(getResources().getColor(button_text));
             vbutton.setTextColor(getResources().getColor(button_text));
             gbutton.setTextColor(getResources().getColor(button_text));
+            dcbutton.setTextColor(getResources().getColor(button_text));
         }
         if (Build.VERSION.SDK_INT >= 21) {
             cbutton.setBackground(getResources().getDrawable(button_active, null));
             sbutton.setBackground(getResources().getDrawable(button_active, null));
+            dcbutton.setBackground(getResources().getDrawable(button_active, null));
             if (connected) {
                 mbutton.setEnabled(true);
                 vbutton.setEnabled(true);
@@ -228,6 +250,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             cbutton.setBackground(getResources().getDrawable(button_active));
             sbutton.setBackground(getResources().getDrawable(button_active));
+            dcbutton.setBackground(getResources().getDrawable(button_active));
             if (connected) {
                 mbutton.setEnabled(true);
                 vbutton.setEnabled(true);
@@ -261,10 +284,22 @@ public class MainActivity extends AppCompatActivity {
     }
 */
     public void connect(View view) {
-        Intent intent = new Intent(MainActivity.this, ScanActivity.class);
-        startActivity(intent);
+        //Intent intent = new Intent(MainActivity.this, ScanActivity.class);
+        //startActivity(intent);
+        if(MyoIntent==null){
+            MyoIntent = new Intent(this, BackgroundService.class);
+            bindService(MyoIntent, MyoConnection, Context.BIND_AUTO_CREATE);
+            startService(MyoIntent);
+        }
     }
-
+    public void disconnect(View view){
+     if (MyoIntent != null){
+         MyoSrvc.disconnect();
+         unbindService(MyoConnection);
+         stopService(MyoIntent);
+         MyoIntent = null;
+     }
+    }
     public void music(View view) {
         Intent intent = new Intent(MainActivity.this, Music.class);
         startActivity(intent);
@@ -284,82 +319,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, Settings.class);
         startActivity(intent);
     }
-
-
-    public DeviceListener mListener = new AbstractDeviceListener() {
-        @Override
-        public void onConnect(Myo myo, long timestamp) {
-
-        }
-
-
-        @Override
-        public void onDisconnect(Myo myo, long timestamp) {
-
-        }
-
-
-        @Override
-        public void onArmSync(Myo myo, long timestamp, Arm arm, XDirection xDirection) {
-        }
-
-
-        @Override
-        public void onArmUnsync(Myo myo, long timestamp) {
-            //mTextView.setText(R.string.hello_world);
-        }
-
-
-        @Override
-        public void onUnlock(Myo myo, long timestamp) {
-
-        }
-
-        @Override
-        public void onLock(Myo myo, long timestamp) {
-
-        }
-        // onPose() is called whenever a Myo provides a new pose.
-        @Override
-        public void onPose(Myo myo, long timestamp, Pose pose) {
-            // Handle the cases of the Pose enumeration, and change the text of the text view
-            // based on the pose we receive.
-            switch (pose) {
-                case REST:
-                case DOUBLE_TAP:
-                    myo.unlock(Myo.UnlockType.TIMED);
-                case FIST:
-                    music(null);
-                    break;
-                case WAVE_IN:
-                    gallery(null);
-                    break;
-                case WAVE_OUT:
-                    video(null);
-                    break;
-                case FINGERS_SPREAD:
-                    settings(null);
-                    break;
-            }
-
-            if (pose != Pose.UNKNOWN && pose != Pose.REST) {
-                // Tell the Myo to stay unlocked until told otherwise. We do that here so you can
-                // hold the poses without the Myo becoming locked.
-                myo.unlock(Myo.UnlockType.HOLD);
-
-                // Notify the Myo that the pose has resulted in an action, in this case changing
-                // the text on the screen. The Myo will vibrate.
-                myo.notifyUserAction();
-            } else {
-                // Tell the Myo to stay unlocked only for a short period. This allows the Myo to
-                // stay unlocked while poses are being performed, but lock after inactivity.
-                myo.unlock(Myo.UnlockType.TIMED);
-            }
-        }
-
-    };
-
-
     @Override
     public void onStop() {
         super.onStop();

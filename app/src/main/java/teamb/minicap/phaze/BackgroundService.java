@@ -2,7 +2,7 @@
  * Copyright (C) 2014 Thalmic Labs Inc.
  * Distributed under the Myo SDK license agreement. See LICENSE.txt for details.
  */
-/*
+
 
 
 
@@ -10,48 +10,111 @@
 
 package teamb.minicap.phaze;
 
+import android.app.Activity;
 import android.app.Service;
 import android.content.Intent;
+import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Switch;
 import android.widget.Toast;
 import com.thalmic.myo.AbstractDeviceListener;
+import com.thalmic.myo.Arm;
 import com.thalmic.myo.DeviceListener;
 import com.thalmic.myo.Hub;
 import com.thalmic.myo.Myo;
 import com.thalmic.myo.Pose;
+import com.thalmic.myo.XDirection;
+
 
 public class BackgroundService extends Service {
     private static final String TAG = "BackgroundService";
     private Toast mToast;
+    private MyoBinder MyoBind = new MyoBinder();
+    private Activity currentActivity;
+    private Hub hub;
+    private boolean locked;
     // Classes that inherit from AbstractDeviceListener can be used to receive events from Myo devices.
     // If you do not override an event, the default behavior is to do nothing.
     private DeviceListener mListener = new AbstractDeviceListener() {
         @Override
         public void onConnect(Myo myo, long timestamp) {
-            showToast(getString(R.string.connected));
+            String Connected = getString(R.string.connected) + myo.getName();
+            showToast(Connected);
+            myo.lock();
+            locked = true;
         }
         @Override
         public void onDisconnect(Myo myo, long timestamp) {
             showToast(getString(R.string.disconnected));
+        }
+        @Override
+        public void onLock(Myo myo, long timestamp){
+            showToast("Locked");
+            locked = true;
+        }
+        @Override
+        public void onUnlock(Myo myo, long timestamp){
+            showToast("Unlocked");
+            locked = false;
         }
         // onPose() is called whenever the Myo detects that the person wearing it has changed their pose, for example,
         // making a fist, or not making a fist anymore.
         @Override
         public void onPose(Myo myo, long timestamp, Pose pose) {
             // Show the name of the pose in a toast.
-            showToast(getString(R.string.pose, pose.toString()));
+
+            switch(pose){
+                case DOUBLE_TAP:
+                    if (myo.isUnlocked()) {
+                        myo.lock();
+                        break;
+                    }
+                    myo.unlock(Myo.UnlockType.HOLD);
+                    break;
+                case FIST:
+                    if(!locked)
+                        showToast(pose.toString());
+                    break;
+                case WAVE_IN:
+                    if(!locked)
+                        showToast(pose.toString());
+                    break;
+                case WAVE_OUT:
+                    if(!locked)
+                        showToast(pose.toString());
+                    break;
+                case FINGERS_SPREAD:
+                    if(!locked)
+                        showToast(pose.toString());
+                    break;
+                case REST:
+                    break;
+                case UNKNOWN:
+                    break;
+            }
+            if (pose != Pose.UNKNOWN && pose != Pose.REST){
+                myo.unlock(Myo.UnlockType.HOLD);
+                myo.notifyUserAction();
+            }
+            else{
+                myo.unlock(Myo.UnlockType.TIMED);
+            }
         }
     };
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return MyoBind;
+    }
+    @Override
+    public boolean onUnbind (Intent intent){
+        return false;
     }
     @Override
     public void onCreate() {
         super.onCreate();
         // First, we initialize the Hub singleton with an application identifier.
-        Hub hub = Hub.getInstance();
+        hub = Hub.getInstance();
         if (!hub.init(this, getPackageName())) {
             showToast("Couldn't initialize Hub");
             stopSelf();
@@ -63,6 +126,8 @@ public class BackgroundService extends Service {
         hub.addListener(mListener);
         // Finally, scan for Myo devices and connect to the first one found that is very near.
         hub.attachToAdjacentMyo();
+        //Intent intent = new Intent(this, ScanActivity.class);
+        //startActivity(intent);
     }
     @Override
     public void onDestroy() {
@@ -80,11 +145,24 @@ public class BackgroundService extends Service {
         }
         mToast.show();
     }
+    public class MyoBinder extends Binder {
+        BackgroundService getService() {return BackgroundService.this;
+        }
+    }
+    public void disconnect(){
+        hub.detach(hub.getConnectedDevices().get(0).getMacAddress());
+    }
+    public Boolean anyDevicesConnected(){
+        if (hub.getConnectedDevices() == null)
+            return false;
+        return true;
+    }
+
 }
 
 
 
-*/
+
 
 
 //commented out so that i could compile -alex PS sorry sarah

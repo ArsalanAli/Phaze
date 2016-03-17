@@ -25,7 +25,7 @@
             </intent-filter>
         </activity>
         <service android:name=".Service_Music"/>
-        <activity android:name=".MyoConnect" />
+        <service android:name=".BackgroundService"/>
         <activity android:name=".Music"/>
         <activity android:name=".Video" />
         <activity android:name=".Gallery" />
