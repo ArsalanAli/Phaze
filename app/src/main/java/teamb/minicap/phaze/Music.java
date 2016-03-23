@@ -1,6 +1,7 @@
 package teamb.minicap.phaze;
 
 import android.content.SharedPreferences;
+import android.media.AudioManager;
 import android.media.session.MediaController;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +17,7 @@ import java.util.Comparator;
 import android.net.Uri;
 import android.content.ContentResolver;
 import android.database.Cursor;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.os.IBinder;
 import android.content.ComponentName;
@@ -27,6 +29,7 @@ import android.view.View;
 import java.util.ArrayList;
 import teamb.minicap.phaze.Service_Music.MusicBinder;
 import android.widget.MediaController.MediaPlayerControl;
+import android.widget.Toast;
 
 
 public class Music extends AppCompatActivity implements MediaPlayerControl {
@@ -40,6 +43,10 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
     private MusicController controller;
     private boolean paused=false, playbackPaused=false;
 
+    private SeekBar volumeSeekbar = null;
+    private AudioManager audioManager = null;
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +56,27 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
         trackView = (ListView)findViewById(R.id.trackView);
         trackList = new ArrayList<Tracks>();
 
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        int vol = prefs.getInt("defvolseekbar", 50);
+
         retrieveMedia();
+
+        //Toast.makeText(this, String.valueOf(vol), Toast.LENGTH_LONG).show();
+
+
+        setVolumeControlStream(audioManager.STREAM_MUSIC);
+        audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,
+                AudioManager.ADJUST_SAME, AudioManager.FLAG_SHOW_UI);
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,100-vol,AudioManager.FLAG_SHOW_UI);
+
+
+
+
+
+
+
 
         // This will be changed later in order to sort differently
         Collections.sort(trackList, new Comparator<Tracks>() {
