@@ -58,7 +58,7 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
 
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        int vol = prefs.getInt("defvolseekbar", 50);
+        int vol = prefs.getInt("defvolseekbar", 5);
 
         retrieveMedia();
 
@@ -69,7 +69,7 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,
                 AudioManager.ADJUST_SAME, AudioManager.FLAG_SHOW_UI);
-        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,100-vol,AudioManager.FLAG_SHOW_UI);
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,vol,AudioManager.FLAG_SHOW_UI);
 
 
 

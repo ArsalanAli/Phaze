@@ -22,6 +22,13 @@ import android.app.PendingIntent;
 /**
  * Created by Kareem on 2016-03-05.
  */
+
+
+//fade in stuff here
+
+
+
+
 public class Service_Music extends Service implements
         MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener,
         MediaPlayer.OnCompletionListener {
@@ -128,6 +135,13 @@ public class Service_Music extends Service implements
                 currSong);
         try{
             player.setDataSource(getApplicationContext(), trackUri);
+            //default volume
+            //player.setVolume();
+            //fade in here
+            //float volume=1;
+            //float speed=0.05f;
+            //player.setVolume(volume, volume);
+
         }
         catch(Exception e){
             Log.e("MUSIC SERVICE", "Error setting data source", e);

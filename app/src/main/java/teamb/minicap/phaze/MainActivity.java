@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.Manifest;
+import android.widget.SeekBar;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
@@ -33,14 +34,11 @@ public class MainActivity extends AppCompatActivity {
     Button gbutton;
     Button sbutton;
 
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
     private GoogleApiClient client;
-    private AudioManager MuteManager;
 
-    private boolean headsetConnected = false;
+    {
+    //private boolean headsetConnected = false;
+
 
     /*public void onReceive(Context context, Intent intent) {
         if (intent.hasExtra("state")){
@@ -52,7 +50,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }*/
 
-    @Override
+}
+
+        @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         int Request_Result = 1;
@@ -77,11 +78,10 @@ public class MainActivity extends AppCompatActivity {
         gbutton.setTypeface(PTfont);
         sbutton.setTypeface(PTfont);
 
-
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
-        MuteManager=(AudioManager)getSystemService(Context.AUDIO_SERVICE);
+
     }
 
     /*IDs for everything on main activity
@@ -92,9 +92,12 @@ public class MainActivity extends AppCompatActivity {
     Gallery button: gallery
     Settings button: settings
     */
+
     @Override
     public void onStart() {
         super.onStart();
+
+
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client.connect();
@@ -135,7 +138,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case "Mute":
                 //Muteme;
-                //MuteManager.adjustSuggestedStreamVolume(AudioManager.ADJUST_LOWER,AudioManager.STREAM_MUSIC,100);
                 break;
             case "Pause":
                 //Pauseme;
@@ -222,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-/*  this is alex's stuff for the mute and pause settings
+    {/*  this is alex's stuff for the mute and pause settings
     public void onReceive(Context context, Intent intent) {
 
         if (intent.hasExtra("state")){
@@ -236,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-*/
+*/}
     public void connect(View view) {
         Intent intent = new Intent(MainActivity.this, MyoConnect.class);
         startActivity(intent);
