@@ -16,4 +16,5 @@
         <item>Album</item>
         <item>Year</item>
     </string-array>
+    <string name="title_activity_video_player">VideoPlayer</string>
 </resources>
