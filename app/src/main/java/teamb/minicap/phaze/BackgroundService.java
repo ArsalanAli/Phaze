@@ -13,6 +13,7 @@ package teamb.minicap.phaze;
 import android.app.Activity;
 import android.app.Service;
 import android.content.Intent;
+import android.media.session.MediaController;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
@@ -34,6 +35,8 @@ public class BackgroundService extends Service {
     private Activity currentActivity;
     private Hub hub;
     private boolean locked;
+    private boolean music;
+    MusicController controller;
     // Classes that inherit from AbstractDeviceListener can be used to receive events from Myo devices.
     // If you do not override an event, the default behavior is to do nothing.
     private DeviceListener mListener = new AbstractDeviceListener() {
@@ -73,8 +76,14 @@ public class BackgroundService extends Service {
                     myo.unlock(Myo.UnlockType.HOLD);
                     break;
                 case FIST:
-                    if(!locked)
-                        showToast(pose.toString());
+                    if(!locked) {
+                        if (music){
+                            showToast(pose.toString()+" Music");
+                        }
+                        else {
+                            showToast(pose.toString());
+                        }
+                    }
                     break;
                 case WAVE_IN:
                     if(!locked)
@@ -92,13 +101,6 @@ public class BackgroundService extends Service {
                     break;
                 case UNKNOWN:
                     break;
-            }
-            if (pose != Pose.UNKNOWN && pose != Pose.REST){
-                myo.unlock(Myo.UnlockType.HOLD);
-                myo.notifyUserAction();
-            }
-            else{
-                myo.unlock(Myo.UnlockType.TIMED);
             }
         }
     };
@@ -125,7 +127,7 @@ public class BackgroundService extends Service {
         // Next, register for DeviceListener callbacks.
         hub.addListener(mListener);
         // Finally, scan for Myo devices and connect to the first one found that is very near.
-        hub.attachToAdjacentMyo();
+        //hub.attachToAdjacentMyo();
         //Intent intent = new Intent(this, ScanActivity.class);
         //startActivity(intent);
     }
@@ -157,7 +159,15 @@ public class BackgroundService extends Service {
             return false;
         return true;
     }
-
+    public void setController(MusicController m){
+        controller = m;
+    }
+    public void musicOn(){
+        music = true;
+    }
+    public void musicOff(){
+        music = false;
+    }
 }
 
 

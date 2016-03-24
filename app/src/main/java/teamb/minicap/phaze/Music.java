@@ -72,7 +72,6 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
         trackView.setAdapter(trackAdapter);
 
         setController();
-
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -97,7 +96,6 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
             case R.id.action_end:
                 stopService(playIntent);
                 musicSrv=null;
-                MyoSrvc.disconnect();
                 unbindService(MyoConnection);
                 stopService(MyoIntent);
                 MyoIntent = null;
@@ -132,6 +130,8 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
             //get service
             MyoSrvc = binder.getService();
             MyoBound = true;
+            MyoSrvc.musicOn();
+            MyoSrvc.setController(controller);
         }
 
         @Override
@@ -154,6 +154,7 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
             bindService(MyoIntent, MyoConnection, Context.BIND_AUTO_CREATE);
             startService(MyoIntent);
         }
+
     }
 
     public void retrieveMedia(){
@@ -217,6 +218,7 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
         controller.setMediaPlayer(this);
         controller.setAnchorView(findViewById(R.id.trackView));
         controller.setEnabled(true);
+
     }
     private void playNext(){
         musicSrv.playNext();

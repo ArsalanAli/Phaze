@@ -138,22 +138,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Main Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app deep link URI is correct.
-                Uri.parse("android-app://teamb.minicap.phaze/http/host/path")
-        );
-        AppIndex.AppIndexApi.start(client, viewAction);
+
     }
     @Override
     public void onResume(){
@@ -284,13 +269,13 @@ public class MainActivity extends AppCompatActivity {
     }
 */
     public void connect(View view) {
-        //Intent intent = new Intent(MainActivity.this, ScanActivity.class);
-        //startActivity(intent);
         if(MyoIntent==null){
             MyoIntent = new Intent(this, BackgroundService.class);
             bindService(MyoIntent, MyoConnection, Context.BIND_AUTO_CREATE);
             startService(MyoIntent);
         }
+        Intent intent = new Intent(this, ScanActivity.class);
+        startActivity(intent);
     }
     public void disconnect(View view){
      if (MyoIntent != null){
@@ -322,21 +307,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onStop() {
         super.onStop();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Main Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app deep link URI is correct.
-                Uri.parse("android-app://teamb.minicap.phaze/http/host/path")
-        );
-        AppIndex.AppIndexApi.end(client, viewAction);
-        client.disconnect();
     }
 }
 
