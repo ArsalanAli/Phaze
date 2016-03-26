@@ -1,7 +1,8 @@
 package teamb.minicap.phaze;
 
-//Retrieve and store songs
-
+/**
+ * Created by Kareem on 2016-03-05.
+ */
 public class Tracks{
 
     private long identification;

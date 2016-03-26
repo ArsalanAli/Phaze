@@ -3,8 +3,15 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#424445</color>
     <color name="colorAccent">#303F9F</color>
+    <color name="button_dark">#424445</color>
     <color name="button_text">#000000</color>
+    <color name="button_text_light">#FFFFFF</color>
+    <color name="button_text_dark">#535353</color>
     <color name="active_color">#cacbcb</color>
+    <color name="active_color_light">#128db6</color>
+    <color name="active_color_dark">#000000</color>
     <color name="inactive_color">#535353</color>
+    <color name="inactive_color_light">#0b5874</color>
+    <color name="inactive_color_dark">#262626</color>
     <color name="background">#424445</color>
 </resources>
