@@ -2,9 +2,13 @@ package teamb.minicap.phaze;
 
 import android.Manifest;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.TypedArray;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
@@ -12,6 +16,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.GridView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -22,7 +27,8 @@ import java.util.Comparator;
 
 public class Gallery extends AppCompatActivity {
     private ArrayList<pics> picsList;
-    private ListView picsView;
+    private GridView picsView;
+    private picsAdapter gridAdapt;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,8 +40,9 @@ public class Gallery extends AppCompatActivity {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, request);
             }
         }
-        picsView = (ListView) findViewById(R.id.picsView);
-        picsList = new ArrayList<pics>();
+        picsView = (GridView) findViewById(R.id.gridView);
+        gridAdapt = new picsAdapter(this, R.layout.activity_gallery, picsList);
+        picsView.setAdapter(gridAdapt);
 
         retrieveMedia();
 
@@ -45,14 +52,16 @@ public class Gallery extends AppCompatActivity {
             }
         });
 
-        picsAdapter picsAdapter = new picsAdapter(this, picsList);
-        picsView.setAdapter(picsAdapter);
     }
+
+
 
     public void retrieveMedia() {
         ContentResolver pictureResolver = getContentResolver();
         Uri pictureUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
         Cursor pictureCursor = pictureResolver.query(pictureUri, null, null, null, null);
+
+
 
         if (pictureCursor != null && pictureCursor.moveToFirst()) {
 
@@ -63,7 +72,8 @@ public class Gallery extends AppCompatActivity {
             do {
                 long thisId = pictureCursor.getLong(idColumn);
                 String thisTitle = pictureCursor.getString(title);
-                picsList.add(new pics(thisId, thisTitle));
+                Bitmap bitmap = BitmapFactory.decodeFile(ContentUris.withAppendedId(pictureUri, thisId).toString()) ;
+                picsList.add(new pics(thisId, thisTitle, bitmap));
             }
             while (pictureCursor.moveToNext());
         }
