@@ -9,11 +9,9 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="teamb.minicap.phaze.Gallery">
 
-    <ListView
+    <GridView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/picsView"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:divider="#010101" />
+        android:id="@+id/gridView"
+        android:layout_centerVertical="true" />
 </RelativeLayout>

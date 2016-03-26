@@ -1,12 +1,11 @@
 package teamb.minicap.phaze;
 
-import android.content.ContentUris;
+import android.app.Activity;
 import android.content.Context;
-import android.net.Uri;
-import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -17,39 +16,40 @@ import java.util.ArrayList;
 /**
  * Created by Kareem on 2016-03-25.
  */
-public class picsAdapter extends BaseAdapter{
-    private ArrayList<pics> pictures;
-    private LayoutInflater details;
+public class picsAdapter extends ArrayAdapter {
 
-    public picsAdapter(Context c, ArrayList<pics> thepics){
-        pictures = thepics;
-        details = LayoutInflater.from(c);
-    }
+    private Context c;
+    private int layoutResourceId;
+    private ArrayList pictures = new ArrayList();
 
-    @Override
-    public int getCount() {
-        return pictures.size();
-    }
-
-    @Override
-    public Object getItem(int position) {
-        return null;
-    }
-
-    @Override
-    public long getItemId(int arg0) {
-        return 0;
+    public picsAdapter(Context c, int layoutResourceId, ArrayList data) {
+        super(c, layoutResourceId, data);
+        this.layoutResourceId = layoutResourceId;
+        this.c = c;
+        pictures = data;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        //map to song layout
-        LinearLayout picsLayout = (LinearLayout)details.inflate
-                (R.layout.pics, parent, false);
-        TextView picsView = (TextView)picsLayout.findViewById(R.id.pics_title);
-        pics current = pictures.get(position);
-        picsView.setText(current.getTitle());
-        picsLayout.setTag(position);
-        return picsLayout;
+        View row = convertView;
+        ViewHolder holder = null;
+
+        if (row == null) {
+            LayoutInflater inflater = ((Activity) c).getLayoutInflater();
+            row = inflater.inflate(layoutResourceId, parent, false);
+            holder = new ViewHolder();
+            holder.image = (ImageView) row.findViewById(R.id.image);
+            row.setTag(holder);
+        } else {
+            holder = (ViewHolder) row.getTag();
+        }
+
+        pics item = pictures.get(position);
+        holder.image.setImageBitmap(item.getImage());
+        return row;
+    }
+
+    static class ViewHolder {
+        ImageView image;
     }
 }
