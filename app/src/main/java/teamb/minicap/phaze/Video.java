@@ -5,6 +5,8 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
@@ -51,7 +53,8 @@ public class Video extends AppCompatActivity {
         ContentResolver videoResolver = getContentResolver();
         Uri videoUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
         Cursor videoCursor = videoResolver.query(videoUri, null, null, null, null);
-
+        BitmapFactory.Options opts = new BitmapFactory.Options();
+        opts.inSampleSize = 1;
         if(videoCursor!= null && videoCursor.moveToFirst()){
 
             int title = videoCursor.getColumnIndex
@@ -61,7 +64,9 @@ public class Video extends AppCompatActivity {
             do {
                 long thisId = videoCursor.getLong(idColumn);
                 String thisTitle = videoCursor.getString(title);
-                vidsList.add(new vids(thisId, thisTitle));
+                Bitmap tnail = MediaStore.Video.Thumbnails.getThumbnail(videoResolver, thisId,
+                        MediaStore.Video.Thumbnails.MINI_KIND, opts);
+                vidsList.add(new vids(thisId, thisTitle, tnail));
             }
             while (videoCursor.moveToNext());
         }

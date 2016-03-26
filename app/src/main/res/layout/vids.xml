@@ -1,20 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:onClick="vidChosen"
-    android:padding="5dp">
+    android:padding="5dp"
+    android:weightSum="1">
 
     <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+        android:id="@+id/thumbnail"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_weight="0"
+        android:paddingRight="5dp" />
 
     <TextView
         android:id="@+id/vids_title"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
         android:textColor="#000000"
         android:textSize="20sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:paddingLeft="5dp" />
+
 </LinearLayout>

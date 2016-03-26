@@ -1,8 +1,11 @@
 package teamb.minicap.phaze;
 
 import android.Manifest;
+import android.content.ContentUris;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.media.MediaMetadata;
+import android.media.MediaMetadataRetriever;
 import android.media.session.MediaController;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
@@ -72,6 +75,7 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
         trackView.setAdapter(trackAdapter);
 
         setController();
+        playbackPaused=false;
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -168,7 +172,7 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
         ContentResolver musicResolver = getContentResolver();
         Uri musicUri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         Cursor musicCursor = musicResolver.query(musicUri, null, null, null, null);
-
+        MediaMetadataRetriever mmr = new MediaMetadataRetriever();
         if(musicCursor!= null && musicCursor.moveToFirst()){
 
             int titleColumn = musicCursor.getColumnIndex
@@ -183,11 +187,14 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
                     (android.provider.MediaStore.Audio.Media.YEAR);
             do {
                 long thisId = musicCursor.getLong(idColumn);
+                mmr.setDataSource(this,ContentUris.withAppendedId(
+                        android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, thisId));
+                byte[] data = mmr.getEmbeddedPicture();
                 String thisTitle = musicCursor.getString(titleColumn);
                 String thisArtist = musicCursor.getString(artistColumn);
                 String thisYear = musicCursor.getString(yearColumn);
                 String thisAlbum = musicCursor.getString(albumColumn);
-                trackList.add(new Tracks(thisId, thisTitle, thisArtist, thisAlbum, thisYear));
+                trackList.add(new Tracks(thisId, thisTitle, thisArtist, thisAlbum, thisYear, data));
             }
             while (musicCursor.moveToNext());
         }

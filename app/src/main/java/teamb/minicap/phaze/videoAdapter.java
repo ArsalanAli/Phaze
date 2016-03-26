@@ -1,13 +1,18 @@
 package teamb.minicap.phaze;
 
+import android.content.ContentResolver;
 import android.content.Context;
+import android.media.Image;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.net.ContentHandler;
 import java.util.ArrayList;
 
 /**
@@ -39,12 +44,13 @@ public class videoAdapter extends BaseAdapter{
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        //map to song layout
         LinearLayout vidsLayout = (LinearLayout)details.inflate
                 (R.layout.vids, parent, false);
         TextView vidView = (TextView)vidsLayout.findViewById(R.id.vids_title);
+        ImageView tnail = (ImageView)vidsLayout.findViewById(R.id.thumbnail);
         vids current = videos.get(position);
         vidView.setText(current.getTitle());
+        tnail.setImageBitmap(current.getTnail());
         vidsLayout.setTag(position);
         return vidsLayout;
     }
