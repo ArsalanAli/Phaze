@@ -3,11 +3,6 @@
  * Distributed under the Myo SDK license agreement. See LICENSE.txt for details.
  */
 
-
-
-
-
-
 package teamb.minicap.phaze;
 
 import android.app.Activity;
@@ -34,9 +29,14 @@ public class BackgroundService extends Service {
     private MyoBinder MyoBind = new MyoBinder();
     private Activity currentActivity;
     private Hub hub;
+    private Service_Music musicSrv;
     private boolean locked;
     private boolean music;
+    private boolean musicPlayStatus = true;
+    private boolean video;
+    private boolean gallery;
     MusicController controller;
+
     // Classes that inherit from AbstractDeviceListener can be used to receive events from Myo devices.
     // If you do not override an event, the default behavior is to do nothing.
     private DeviceListener mListener = new AbstractDeviceListener() {
@@ -61,6 +61,7 @@ public class BackgroundService extends Service {
             showToast("Unlocked");
             locked = false;
         }
+
         // onPose() is called whenever the Myo detects that the person wearing it has changed their pose, for example,
         // making a fist, or not making a fist anymore.
         @Override
@@ -86,16 +87,32 @@ public class BackgroundService extends Service {
                     }
                     break;
                 case WAVE_IN:
-                    if(!locked)
+                    if(!locked) {
                         showToast(pose.toString());
+                        if (music)
+                            musicSrv.playPrev();
+                    }
                     break;
                 case WAVE_OUT:
-                    if(!locked)
+                    if(!locked) {
                         showToast(pose.toString());
+                        if (music)
+                            musicSrv.playNext();
+                    }
                     break;
                 case FINGERS_SPREAD:
-                    if(!locked)
+                    if(!locked) {
                         showToast(pose.toString());
+                        if (music) {
+                            if (musicPlayStatus) {
+                                musicSrv.pausePlayer();
+                                musicPlayStatus = false;
+                            } else {
+                                musicSrv.go();
+                                musicPlayStatus = true;
+                            }
+                        }
+                    }
                     break;
                 case REST:
                     break;
@@ -104,14 +121,17 @@ public class BackgroundService extends Service {
             }
         }
     };
+
     @Override
     public IBinder onBind(Intent intent) {
         return MyoBind;
     }
+
     @Override
     public boolean onUnbind (Intent intent){
         return false;
     }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -131,6 +151,7 @@ public class BackgroundService extends Service {
         //Intent intent = new Intent(this, ScanActivity.class);
         //startActivity(intent);
     }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -138,6 +159,7 @@ public class BackgroundService extends Service {
         Hub.getInstance().removeListener(mListener);
         Hub.getInstance().shutdown();
     }
+
     private void showToast(String text) {
         Log.w(TAG, text);
         if (mToast == null) {
@@ -147,32 +169,32 @@ public class BackgroundService extends Service {
         }
         mToast.show();
     }
+
     public class MyoBinder extends Binder {
         BackgroundService getService() {return BackgroundService.this;
         }
     }
+
     public void disconnect(){
         hub.detach(hub.getConnectedDevices().get(0).getMacAddress());
     }
+
     public Boolean anyDevicesConnected(){
         if (hub.getConnectedDevices() == null)
             return false;
         return true;
     }
+
     public void setController(MusicController m){
         controller = m;
     }
+
     public void musicOn(){
         music = true;
     }
+
     public void musicOff(){
         music = false;
     }
 }
 
-
-
-
-
-
-//commented out so that i could compile -alex PS sorry sarah
