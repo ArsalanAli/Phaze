@@ -2,6 +2,7 @@ package teamb.minicap.phaze;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.media.Image;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
@@ -21,10 +22,12 @@ import java.util.ArrayList;
 public class videoAdapter extends BaseAdapter{
     private ArrayList<vids> videos;
     private LayoutInflater details;
+    private ArrayList<Bitmap> Tnails;
 
-    public videoAdapter(Context c, ArrayList<vids> thevids){
+    public videoAdapter(Context c, ArrayList<vids> thevids, ArrayList<Bitmap> tnails){
         videos = thevids;
         details = LayoutInflater.from(c);
+        Tnails = tnails;
     }
 
     @Override
@@ -50,7 +53,7 @@ public class videoAdapter extends BaseAdapter{
         ImageView tnail = (ImageView)vidsLayout.findViewById(R.id.thumbnail);
         vids current = videos.get(position);
         vidView.setText(current.getTitle());
-        tnail.setImageBitmap(current.getTnail());
+        tnail.setImageBitmap(Tnails.get(current.getTnail()));
         vidsLayout.setTag(position);
         return vidsLayout;
     }

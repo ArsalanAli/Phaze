@@ -23,6 +23,7 @@ import java.util.Comparator;
 
 public class Video extends AppCompatActivity {
     private ArrayList<vids> vidsList;
+    private ArrayList<Bitmap> Tnails;
     private ListView vidsView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +38,7 @@ public class Video extends AppCompatActivity {
         }
         vidsView = (ListView)findViewById(R.id.vidsView);
         vidsList = new ArrayList<vids>();
+        Tnails = new ArrayList<Bitmap>();
 
         retrieveMedia();
 
@@ -46,7 +48,7 @@ public class Video extends AppCompatActivity {
             }
         });
 
-        videoAdapter vidsAdapter = new videoAdapter(this, vidsList);
+        videoAdapter vidsAdapter = new videoAdapter(this, vidsList, Tnails);
         vidsView.setAdapter(vidsAdapter);
     }
     public void retrieveMedia(){
@@ -66,7 +68,8 @@ public class Video extends AppCompatActivity {
                 String thisTitle = videoCursor.getString(title);
                 Bitmap tnail = MediaStore.Video.Thumbnails.getThumbnail(videoResolver, thisId,
                         MediaStore.Video.Thumbnails.MINI_KIND, opts);
-                vidsList.add(new vids(thisId, thisTitle, tnail));
+                vidsList.add(new vids(thisId, thisTitle, videoCursor.getPosition()));
+                Tnails.add(tnail);
             }
             while (videoCursor.moveToNext());
         }

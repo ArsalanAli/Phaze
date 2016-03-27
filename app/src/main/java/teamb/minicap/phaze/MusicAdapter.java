@@ -1,5 +1,6 @@
 package teamb.minicap.phaze;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.View;
@@ -19,11 +20,13 @@ import android.widget.TextView;
 public class MusicAdapter extends BaseAdapter {
 
     private ArrayList<Tracks> tracks;
+    private Context C;
     private LayoutInflater details;
 
     public MusicAdapter(Context c, ArrayList<Tracks> theTracks){
         tracks = theTracks;
         details = LayoutInflater.from(c);
+        C = c;
     }
 
     @Override
@@ -55,7 +58,18 @@ public class MusicAdapter extends BaseAdapter {
         byte[] aa = current.getAlbumArt();
         if (aa != null){
             Bitmap bitmap = BitmapFactory.decodeByteArray(aa, 0, aa.length);
-            albumArt.setImageBitmap(bitmap);
+            int width = 300;
+            int height = 300;
+            Bitmap resized = Bitmap.createScaledBitmap(bitmap,width,height,true);
+            albumArt.setImageBitmap(resized);
+        }
+        else{
+            Resources res = C.getResources();
+            Bitmap bitmap = BitmapFactory.decodeResource(res, R.drawable.defaultart);
+            int width = 300;
+            int height = 300;
+            Bitmap resized = Bitmap.createScaledBitmap(bitmap,width,height,true);
+            albumArt.setImageBitmap(resized);
         }
         trackLayout.setTag(position);
         return trackLayout;

@@ -1,7 +1,5 @@
 package teamb.minicap.phaze;
 
-import android.graphics.Bitmap;
-import android.media.Image;
 
 import java.io.Serializable;
 
@@ -11,8 +9,9 @@ import java.io.Serializable;
 public class vids implements Serializable {
     private long identification;
     private String title;
-    private Bitmap Tnail;
-    public vids(long ID, String Name, Bitmap tnail){
+    private int Tnail;
+
+    public vids(long ID, String Name, int tnail){
 
         identification = ID;
         title = Name;
@@ -20,5 +19,6 @@ public class vids implements Serializable {
     }
     public long getID(){return identification;}
     public String getTitle(){return title;}
-    public Bitmap getTnail(){return Tnail;}
+    public int getTnail(){return Tnail;}
+
 }
