@@ -16,40 +16,40 @@ import java.util.ArrayList;
 /**
  * Created by Kareem on 2016-03-25.
  */
-public class picsAdapter extends ArrayAdapter {
+public class picsAdapter extends BaseAdapter {
 
-    private Context c;
-    private int layoutResourceId;
-    private ArrayList pictures = new ArrayList();
+    private ArrayList<pics> pictures;
+    private LayoutInflater details;
 
-    public picsAdapter(Context c, int layoutResourceId, ArrayList data) {
-        super(c, layoutResourceId, data);
-        this.layoutResourceId = layoutResourceId;
-        this.c = c;
-        pictures = data;
+    public picsAdapter(Context c, ArrayList<pics> images) {
+        pictures = images;
+        details = LayoutInflater.from(c);
+    }
+
+    @Override
+    public int getCount() {
+        return pictures.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return null;
+    }
+
+    @Override
+    public long getItemId(int arg0) {
+        return 0;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View row = convertView;
-        ViewHolder holder = null;
-
-        if (row == null) {
-            LayoutInflater inflater = ((Activity) c).getLayoutInflater();
-            row = inflater.inflate(layoutResourceId, parent, false);
-            holder = new ViewHolder();
-            holder.image = (ImageView) row.findViewById(R.id.image);
-            row.setTag(holder);
-        } else {
-            holder = (ViewHolder) row.getTag();
-        }
-
-        pics item = pictures.get(position);
-        holder.image.setImageBitmap(item.getImage());
-        return row;
-    }
-
-    static class ViewHolder {
-        ImageView image;
+        LinearLayout picsLayout = (LinearLayout) details.inflate
+                (R.layout.pics, parent, false);
+        ImageView image = (ImageView) picsLayout.findViewById(R.id.images);
+        pics current = pictures.get(position);
+        image.setImageBitmap(current.getImage());
+        picsLayout.setTag(position);
+        return picsLayout;
     }
 }
+

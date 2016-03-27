@@ -27,8 +27,8 @@ import java.util.Comparator;
 
 public class Gallery extends AppCompatActivity {
     private ArrayList<pics> picsList;
-    private GridView picsView;
-    private picsAdapter gridAdapt;
+    private ListView picsView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,11 +40,13 @@ public class Gallery extends AppCompatActivity {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, request);
             }
         }
-        picsView = (GridView) findViewById(R.id.gridView);
-        gridAdapt = new picsAdapter(this, R.layout.activity_gallery, picsList);
-        picsView.setAdapter(gridAdapt);
+        picsView = (ListView) findViewById(R.id.picsView);
+        picsList = new ArrayList<pics>();
 
         retrieveMedia();
+
+        picsAdapter picsAdapter = new picsAdapter(this, picsList);
+        picsView.setAdapter(picsAdapter);
 
         Collections.sort(picsList, new Comparator<pics>() {
             public int compare(pics one, pics two) {
@@ -54,13 +56,10 @@ public class Gallery extends AppCompatActivity {
 
     }
 
-
-
     public void retrieveMedia() {
         ContentResolver pictureResolver = getContentResolver();
         Uri pictureUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
         Cursor pictureCursor = pictureResolver.query(pictureUri, null, null, null, null);
-
 
 
         if (pictureCursor != null && pictureCursor.moveToFirst()) {

@@ -12,9 +12,9 @@ public class pics{
     private String title;
     private Bitmap image;
 
-    public pics(long ID, String Name, Bitmap image){
+    public pics(long ID, String Name, Bitmap img){
         super();
-        this.image = image;
+        image = img;
         identification = ID;
         title = Name;
     }
