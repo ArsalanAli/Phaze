@@ -1,6 +1,7 @@
 package teamb.minicap.phaze;
 
 import android.content.BroadcastReceiver;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.session.MediaController;
@@ -8,6 +9,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -44,10 +46,9 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
     private boolean paused=false, playbackPaused=false;
 
     //stuff for audio volume control see alex if you want to change this
-
     private SeekBar volumeSeekbar = null;
     private AudioManager audioManager = null;
-
+    private PrivateHeadsetPlugReceiver plugReceiver;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,6 +60,9 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
         trackList = new ArrayList<Tracks>();
 
         retrieveMedia();
+
+        //receiver for unplug pause/mute
+        plugReceiver = new PrivateHeadsetPlugReceiver();
 
         //Default Volume
         //this will make the audio level show up onscreen for debugging
@@ -85,11 +89,13 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
         trackView.setAdapter(trackAdapter);
 
         setController();
+
         //no longer needed
         //broadcastIntent();
     }
+
     //broadcast custom intent
-    //no longer needed?
+    //no longer needed
     /*public void broadcastIntent(){
         Intent intent = new Intent();
         intent.setAction("teamb.minicap.phaze.CUSTOM_INTENT");
@@ -121,7 +127,6 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
                 musicSrv=null;
                 System.exit(0);
                 break;
-
         }
         return super.onOptionsItemSelected(item);
     }
@@ -142,6 +147,7 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
             musicBound = false;
         }
     };
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -189,7 +195,7 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
         }
         controller.show(0);
     }
-    private  void setController(){
+    private void setController(){
         controller = new MusicController(this);
         controller.setPrevNextListeners(new View.OnClickListener() {
             @Override
@@ -214,7 +220,6 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
         }
         controller.show(0);
     }
-    //play previous
     private void playPrev(){
         musicSrv.playPrev();
         if(playbackPaused){
@@ -223,62 +228,75 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
         }
         controller.show(0);
     }
+
     @Override
     public void start() {
         musicSrv.go();
     }
+
     @Override
     public void pause() {
         playbackPaused=true;
         musicSrv.pausePlayer();
     }
+
     @Override
     public int getDuration() {
         if(musicSrv!=null && musicBound && musicSrv.isPng())
         return musicSrv.getDur();
         else return 0;
     }
+
     @Override
     public int getCurrentPosition() {
         if(musicSrv!=null && musicBound && musicSrv.isPng())
         return musicSrv.getSongPosn();
         else return 0;
     }
+
     @Override
     public void seekTo(int pos) {
         musicSrv.seek(pos);
     }
+
     @Override
     public boolean isPlaying() {
         if(musicSrv!=null && musicBound)
         return musicSrv.isPng();
         return false;
     }
+
     @Override
     public int getBufferPercentage() {
         return 0;
     }
+
     @Override
     public boolean canPause() {
         return true;
     }
+
     @Override
     public boolean canSeekBackward() {
         return true;
     }
+
     @Override
     public boolean canSeekForward() {
         return true;
     }
+
     @Override
     public int getAudioSessionId() {
         return 0;
     }
+
     @Override
     protected void onPause(){
         super.onPause();
         paused=true;
     }
+
     @Override
     protected void onResume(){
         super.onResume();
@@ -286,10 +304,61 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
             setController();
             paused=false;
         }
+
+        //Intent for headset status mute/pause
+        IntentFilter filter = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
+        registerReceiver(plugReceiver,filter);
+        Toast.makeText(this,"registered receiver",Toast.LENGTH_LONG).show();
+
+
     }
+
     @Override
     protected void onStop() {
         controller.hide();
         super.onStop();
+    }
+
+    //private class for handling the receiver for mute/pause
+    private class PrivateHeadsetPlugReceiver extends BroadcastReceiver{
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Toast.makeText(context,"received broadcast intent",Toast.LENGTH_LONG).show();
+
+            audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+            //Mute or Pause
+            //this may need to be moved to the Music.java
+
+            String on_unplug = prefs.getString("headset_on_unplug", "Nothing");
+            switch (on_unplug) {
+                case "Nothing":
+                    //do nothing
+                    break;
+                case "Mute":
+                    if(!audioManager.isWiredHeadsetOn())
+                        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,0,AudioManager.FLAG_VIBRATE);
+                    Toast.makeText(context, "inside the mute branch", Toast.LENGTH_LONG).show();
+                    break;
+                case "Pause":
+                    if(!audioManager.isWiredHeadsetOn());
+                    //what function can i call????
+                    //Service_Music Musica = new Service_Music();
+                    //Musica.pausePlayer();
+                    //playbackPaused=true;
+                    //musicSrv.pausePlayer();
+                    Toast.makeText(context,"inside the pause branch",Toast.LENGTH_LONG).show();
+
+                    KeyEvent event1 = new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PAUSE);
+                    KeyEvent event2 = new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PAUSE);
+                    //controller.dispatchKeyEvent(event1);
+                    //controller.dispatchKeyEvent(event2);
+                    if (controller.dispatchKeyEvent(event1)){
+                        controller.dispatchKeyEvent(event2);
+                    }
+                    break;
+            }
+        }
     }
 }

@@ -39,15 +39,11 @@ public class MainActivity extends AppCompatActivity {
     Button sbutton;
 
     private GoogleApiClient client;
-    private PrivateHeadsetPlugReceiver plugReceiver;
-    private AudioManager audioManager = null;
-    private MediaController controller;
+    //private AudioManager audioManager = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //receiver for unplug pause/mute
-        plugReceiver= new PrivateHeadsetPlugReceiver();
 
         int Request_Result = 1;
         if (Build.VERSION.SDK_INT >= 23) {
@@ -84,7 +80,8 @@ public class MainActivity extends AppCompatActivity {
     Video button: video
     Gallery button: gallery
     Settings button: settings
-    */}
+    */
+    }
 
     @Override
     public void onStart() {
@@ -111,12 +108,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onResume() {
-        //Intent for headset status mute/pause
-        IntentFilter filter = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
-        registerReceiver(plugReceiver,filter);
-        Toast.makeText(this,"registered receiver",Toast.LENGTH_LONG).show();
-
-
         super.onResume();
         String theme = prefs.getString("Themes", "Default");
         switch (theme) {
@@ -211,6 +202,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
     {/*  this is alex's stuff for the mute and pause settings
     public void onReceive(Context context, Intent intent) {
 
@@ -225,7 +217,9 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-*/}
+*/
+    }
+
     public void connect(View view) {
         Intent intent = new Intent(MainActivity.this, MyoConnect.class);
         startActivity(intent);
@@ -269,49 +263,6 @@ public class MainActivity extends AppCompatActivity {
         );
         AppIndex.AppIndexApi.end(client, viewAction);
         client.disconnect();
-    }
-
-    //private class for handling the receiver for mute/pause
-    private class PrivateHeadsetPlugReceiver extends BroadcastReceiver{
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Toast.makeText(context,"received broadcast intent",Toast.LENGTH_LONG).show();
-
-            audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-
-            //Mute or Pause
-            //this may need to be moved to the Music.java
-
-            String on_unplug = prefs.getString("headset_on_unplug", "Nothing");
-            switch (on_unplug) {
-                case "Nothing":
-                    //do nothing
-                    break;
-                case "Mute":
-                    if(!audioManager.isWiredHeadsetOn())
-                        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,0,AudioManager.FLAG_VIBRATE);
-                    Toast.makeText(context, "inside the mute branch", Toast.LENGTH_LONG).show();
-                    break;
-                case "Pause":
-                    if(!audioManager.isWiredHeadsetOn());
-                    //what function can i call????
-                    //Service_Music Musica = new Service_Music();
-                    //Musica.pausePlayer();
-                    //playbackPaused=true;
-                    //musicSrv.pausePlayer();
-                    Toast.makeText(context,"inside the pause branch",Toast.LENGTH_LONG).show();
-
-                    KeyEvent event1 = new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PAUSE);
-                    KeyEvent event2 = new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PAUSE);
-                    //controller.dispatchKeyEvent(event1);
-                    //controller.dispatchKeyEvent(event2);
-                    if (controller.dispatchKeyEvent(event1)){
-                        controller.dispatchKeyEvent(event2);
-                    }
-                    break;
-            }
-        }
     }
 }
 
