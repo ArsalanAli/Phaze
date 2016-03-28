@@ -16,6 +16,7 @@ import java.util.ArrayList;
  * Created by Kareem on 2016-03-25.
  */
 public class PicView extends AppCompatActivity {
+
     private ArrayList<pics> picsList;
     private int currPic;
     private ImageView pictures;
@@ -33,7 +34,6 @@ public class PicView extends AppCompatActivity {
         }
 
         displayPicture(picsList.get(currPic).getID());
-
 
     }
 

@@ -33,7 +33,6 @@ public class VideoPlayer extends AppCompatActivity {
 
         playVideo(vidsList.get(currVid).getID());
 
-
     }
 
     public void playVideo(long id){

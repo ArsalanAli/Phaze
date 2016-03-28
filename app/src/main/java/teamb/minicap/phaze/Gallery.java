@@ -71,8 +71,15 @@ public class Gallery extends AppCompatActivity {
             do {
                 long thisId = pictureCursor.getLong(idColumn);
                 String thisTitle = pictureCursor.getString(title);
-                Bitmap bitmap = BitmapFactory.decodeFile(ContentUris.withAppendedId(pictureUri, thisId).toString()) ;
-                picsList.add(new pics(thisId, thisTitle, bitmap));
+                final BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inSampleSize = 15;
+                options.inJustDecodeBounds = false;
+                options.inPreferredConfig = Bitmap.Config.RGB_565;
+                options.inDither = true;
+                Bitmap bitmap = BitmapFactory.decodeFile(pictureCursor.getString(
+                        pictureCursor.getColumnIndex(MediaStore.Images.Media.DATA)),options);
+                Bitmap resized = Bitmap.createScaledBitmap(bitmap,500,500,true);
+                picsList.add(new pics(thisId, thisTitle, resized));
             }
             while (pictureCursor.moveToNext());
         }
