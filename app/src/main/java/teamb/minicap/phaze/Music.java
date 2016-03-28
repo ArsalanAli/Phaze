@@ -1,5 +1,6 @@
 package teamb.minicap.phaze;
 
+import android.content.BroadcastReceiver;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.session.MediaController;
@@ -34,7 +35,6 @@ import android.widget.Toast;
 
 public class Music extends AppCompatActivity implements MediaPlayerControl {
 
-
     private ArrayList<Tracks> trackList;
     private ListView trackView;
     private Service_Music musicSrv;
@@ -42,6 +42,8 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
     private boolean musicBound = false;
     private MusicController controller;
     private boolean paused=false, playbackPaused=false;
+
+    //stuff for audio volume control see alex if you want to change this
 
     private SeekBar volumeSeekbar = null;
     private AudioManager audioManager = null;
@@ -56,25 +58,19 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
         trackView = (ListView)findViewById(R.id.trackView);
         trackList = new ArrayList<Tracks>();
 
-
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        int vol = prefs.getInt("defvolseekbar", 5);
-
         retrieveMedia();
 
+        //Default Volume
+        //this will make the audio level show up onscreen for debugging
         //Toast.makeText(this, String.valueOf(vol), Toast.LENGTH_LONG).show();
 
-
-        setVolumeControlStream(audioManager.STREAM_MUSIC);
-        audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,
-                AudioManager.ADJUST_SAME, AudioManager.FLAG_SHOW_UI);
-        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,vol,AudioManager.FLAG_SHOW_UI);
-
-
-
-
-
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+            int vol = prefs.getInt("defvolseekbar", 5);
+            setVolumeControlStream(audioManager.STREAM_MUSIC);
+            audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,
+                    AudioManager.ADJUST_SAME, AudioManager.FLAG_SHOW_UI);
+            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, vol, AudioManager.FLAG_SHOW_UI);
 
 
 
@@ -89,15 +85,24 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
         trackView.setAdapter(trackAdapter);
 
         setController();
-
+        //no longer needed
+        //broadcastIntent();
     }
+    //broadcast custom intent
+    //no longer needed?
+    /*public void broadcastIntent(){
+        Intent intent = new Intent();
+        intent.setAction("teamb.minicap.phaze.CUSTOM_INTENT");
+        //intent.setAction("android.intent.action.HEADSET_PLUG");
+        sendBroadcast(intent);
+    }
+    */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_music, menu);
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -137,8 +142,6 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
             musicBound = false;
         }
     };
-
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -149,7 +152,6 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
 
         }
     }
-
     public void retrieveMedia(){
         ContentResolver musicResolver = getContentResolver();
         Uri musicUri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
@@ -178,7 +180,6 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
             while (musicCursor.moveToNext());
         }
     }
-
     public void trackChosen(View view){
         musicSrv.setSong(Integer.parseInt(view.getTag().toString()));
         musicSrv.playSong();
@@ -213,7 +214,6 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
         }
         controller.show(0);
     }
-
     //play previous
     private void playPrev(){
         musicSrv.playPrev();
@@ -227,59 +227,49 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
     public void start() {
         musicSrv.go();
     }
-
     @Override
     public void pause() {
         playbackPaused=true;
         musicSrv.pausePlayer();
     }
-
     @Override
     public int getDuration() {
         if(musicSrv!=null && musicBound && musicSrv.isPng())
         return musicSrv.getDur();
         else return 0;
     }
-
     @Override
     public int getCurrentPosition() {
         if(musicSrv!=null && musicBound && musicSrv.isPng())
         return musicSrv.getSongPosn();
         else return 0;
     }
-
     @Override
     public void seekTo(int pos) {
         musicSrv.seek(pos);
     }
-
     @Override
     public boolean isPlaying() {
         if(musicSrv!=null && musicBound)
         return musicSrv.isPng();
         return false;
     }
-
     @Override
     public int getBufferPercentage() {
         return 0;
     }
-
     @Override
     public boolean canPause() {
         return true;
     }
-
     @Override
     public boolean canSeekBackward() {
         return true;
     }
-
     @Override
     public boolean canSeekForward() {
         return true;
     }
-
     @Override
     public int getAudioSessionId() {
         return 0;

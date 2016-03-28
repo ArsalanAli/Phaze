@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -17,10 +18,13 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.Manifest;
+import android.widget.MediaController;
 import android.widget.SeekBar;
+import android.widget.Toast;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
@@ -35,27 +39,16 @@ public class MainActivity extends AppCompatActivity {
     Button sbutton;
 
     private GoogleApiClient client;
+    private PrivateHeadsetPlugReceiver plugReceiver;
+    private AudioManager audioManager = null;
+    private MediaController controller;
 
-    {
-    //private boolean headsetConnected = false;
-
-
-    /*public void onReceive(Context context, Intent intent) {
-        if (intent.hasExtra("state")){
-            if (headsetConnected && intent.getIntExtra("state", 0) == 0){
-                headsetConnected = false;
-            } else if (!headsetConnected && intent.getIntExtra("state", 0) == 1){
-                headsetConnected = true;
-            }
-        }
-    }*/
-
-}
-
-        @Override
-
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //receiver for unplug pause/mute
+        plugReceiver= new PrivateHeadsetPlugReceiver();
+
         int Request_Result = 1;
         if (Build.VERSION.SDK_INT >= 23) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -84,14 +77,14 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    /*IDs for everything on main activity
+    {/*IDs for everything on main activity
     background: main
     Connect to Myo button: connect
     Music button: music
     Video button: video
     Gallery button: gallery
     Settings button: settings
-    */
+    */}
 
     @Override
     public void onStart() {
@@ -118,6 +111,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onResume() {
+        //Intent for headset status mute/pause
+        IntentFilter filter = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
+        registerReceiver(plugReceiver,filter);
+        Toast.makeText(this,"registered receiver",Toast.LENGTH_LONG).show();
+
+
         super.onResume();
         String theme = prefs.getString("Themes", "Default");
         switch (theme) {
@@ -129,18 +128,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case "Default":
                 themechange(0);
-                break;
-        }
-        String on_unplug = prefs.getString("headset_on_unplug", "Nothing");
-        switch (on_unplug) {
-            case "Nothing":
-                //do nothing
-                break;
-            case "Mute":
-                //Muteme;
-                break;
-            case "Pause":
-                //Pauseme;
                 break;
         }
     }
@@ -282,6 +269,49 @@ public class MainActivity extends AppCompatActivity {
         );
         AppIndex.AppIndexApi.end(client, viewAction);
         client.disconnect();
+    }
+
+    //private class for handling the receiver for mute/pause
+    private class PrivateHeadsetPlugReceiver extends BroadcastReceiver{
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Toast.makeText(context,"received broadcast intent",Toast.LENGTH_LONG).show();
+
+            audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+            //Mute or Pause
+            //this may need to be moved to the Music.java
+
+            String on_unplug = prefs.getString("headset_on_unplug", "Nothing");
+            switch (on_unplug) {
+                case "Nothing":
+                    //do nothing
+                    break;
+                case "Mute":
+                    if(!audioManager.isWiredHeadsetOn())
+                        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,0,AudioManager.FLAG_VIBRATE);
+                    Toast.makeText(context, "inside the mute branch", Toast.LENGTH_LONG).show();
+                    break;
+                case "Pause":
+                    if(!audioManager.isWiredHeadsetOn());
+                    //what function can i call????
+                    //Service_Music Musica = new Service_Music();
+                    //Musica.pausePlayer();
+                    //playbackPaused=true;
+                    //musicSrv.pausePlayer();
+                    Toast.makeText(context,"inside the pause branch",Toast.LENGTH_LONG).show();
+
+                    KeyEvent event1 = new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PAUSE);
+                    KeyEvent event2 = new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PAUSE);
+                    //controller.dispatchKeyEvent(event1);
+                    //controller.dispatchKeyEvent(event2);
+                    if (controller.dispatchKeyEvent(event1)){
+                        controller.dispatchKeyEvent(event2);
+                    }
+                    break;
+            }
+        }
     }
 }
 
