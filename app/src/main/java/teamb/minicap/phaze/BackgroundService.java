@@ -78,40 +78,40 @@ public class BackgroundService extends Service {
                     break;
                 case FIST:
                     if(!locked) {
-                        if (music){
-                            showToast(pose.toString()+" Music");
-                        }
-                        else {
+                       //if (music){
+                        //    showToast(pose.toString()+" Music");
+                        //}
+                        //else {
                             showToast(pose.toString());
-                        }
+                      //  }
                     }
                     break;
                 case WAVE_IN:
                     if(!locked) {
                         showToast(pose.toString());
-                        if (music)
-                            musicSrv.playPrev();
+//                        if (music)
+//                            musicSrv.playPrev();
                     }
                     break;
                 case WAVE_OUT:
                     if(!locked) {
                         showToast(pose.toString());
-                        if (music)
-                            musicSrv.playNext();
+//                        if (music)
+//                            musicSrv.playNext();
                     }
                     break;
                 case FINGERS_SPREAD:
                     if(!locked) {
                         showToast(pose.toString());
-                        if (music) {
-                            if (musicPlayStatus) {
-                                musicSrv.pausePlayer();
-                                musicPlayStatus = false;
-                            } else {
-                                musicSrv.go();
-                                musicPlayStatus = true;
-                            }
-                        }
+//                        if (music) {
+//                            if (musicPlayStatus) {
+//                                musicSrv.pausePlayer();
+//                                musicPlayStatus = false;
+//                            } else {
+//                                musicSrv.go();
+//                                musicPlayStatus = true;
+//                            }
+//                        }
                     }
                     break;
                 case REST:
