@@ -21,7 +21,7 @@ import com.thalmic.myo.Hub;
 import com.thalmic.myo.Myo;
 import com.thalmic.myo.Pose;
 import com.thalmic.myo.XDirection;
-
+//lalala
 
 public class BackgroundService extends Service {
     private static final String TAG = "BackgroundService";
