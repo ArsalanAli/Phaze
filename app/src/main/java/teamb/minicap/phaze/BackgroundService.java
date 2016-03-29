@@ -89,29 +89,29 @@ public class BackgroundService extends Service {
                 case WAVE_IN:
                     if(!locked) {
                         showToast(pose.toString());
-                        if (music)
-                            musicSrv.playPrev();
+//                        if (music)
+//                            musicSrv.playPrev();
                     }
                     break;
                 case WAVE_OUT:
                     if(!locked) {
                         showToast(pose.toString());
-                        if (music)
-                            musicSrv.playNext();
+//                        if (music)
+//                            musicSrv.playNext();
                     }
                     break;
                 case FINGERS_SPREAD:
                     if(!locked) {
                         showToast(pose.toString());
-                        if (music) {
-                            if (musicPlayStatus) {
-                                musicSrv.pausePlayer();
-                                musicPlayStatus = false;
-                            } else {
-                                musicSrv.go();
-                                musicPlayStatus = true;
-                            }
-                        }
+//                        if (music) {
+//                            if (musicPlayStatus) {
+//                                musicSrv.pausePlayer();
+//                                musicPlayStatus = false;
+//                            } else {
+//                                musicSrv.go();
+//                                musicPlayStatus = true;
+//                            }
+//                        }
                     }
                     break;
                 case REST:
