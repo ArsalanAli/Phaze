@@ -78,12 +78,12 @@ public class BackgroundService extends Service {
                     break;
                 case FIST:
                     if(!locked) {
-                        if (music){
-                            showToast(pose.toString()+" Music");
-                        }
-                        else {
+                       //if (music){
+                        //    showToast(pose.toString()+" Music");
+                        //}
+                        //else {
                             showToast(pose.toString());
-                        }
+                      //  }
                     }
                     break;
                 case WAVE_IN:
