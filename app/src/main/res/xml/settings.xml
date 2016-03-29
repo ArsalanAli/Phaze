@@ -24,6 +24,24 @@
         android:entries="@array/unplug"
         android:entryValues="@array/unplug"
         />
+    <SeekBarPreference
+        android:title="Fade in/out (ms)"
+        android:summary="The length of the fade in/fade out time in milliseconds"
+        android:id="@+id/fadeseekbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:max="1000"
+        />
+    <SeekBarPreference
+        android:key="defvolseekbar"
+        android:title="Default Volume"
+        android:summary="The default volume when music starts playing"
+        android:id="@+id/defvolseekbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:max="15"
+        />
+
     //opens another nested sub screen
     <PreferenceScreen
         android:key="adv_music"
@@ -54,8 +72,5 @@
         android:title="Advanced Options"
         android:persistent="false">
     </PreferenceScreen>
-
-
-
 
 </PreferenceScreen>

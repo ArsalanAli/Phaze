@@ -6,8 +6,8 @@
         <item>Dark</item>
     </string-array>
     <string-array name="unplug">
-        +        <item>Nothing</item>
-        +        <item>Mute</item>
-        +        <item>Pause</item>
-        +    </string-array>
+        <item>Nothing</item>
+        <item>Mute</item>
+        <item>Pause</item>
+    </string-array>
 </resources>

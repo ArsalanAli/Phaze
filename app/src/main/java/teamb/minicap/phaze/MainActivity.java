@@ -55,22 +55,9 @@ public class MainActivity extends AppCompatActivity {
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
     private GoogleApiClient client;
-    private AudioManager MuteManager;
-
-    private boolean headsetConnected = false;
     private Intent MyoIntent;
     private BackgroundService MyoSrvc;
     private Boolean MyoBound;
-
-    /*public void onReceive(Context context, Intent intent) {
-        if (intent.hasExtra("state")){
-            if (headsetConnected && intent.getIntExtra("state", 0) == 0){
-                headsetConnected = false;
-            } else if (!headsetConnected && intent.getIntExtra("state", 0) == 1){
-                headsetConnected = true;
-            }
-        }
-    }*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,8 +96,8 @@ public class MainActivity extends AppCompatActivity {
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
-        MuteManager=(AudioManager)getSystemService(Context.AUDIO_SERVICE);
     }
+
     private ServiceConnection MyoConnection = new ServiceConnection(){
 
         @Override
@@ -127,19 +114,22 @@ public class MainActivity extends AppCompatActivity {
             MyoBound = false;
         }
     };
-    /*IDs for everything on main activity
+
+    {/*IDs for everything on main activity
     background: main
     Connect to Myo button: connect
     Music button: music
     Video button: video
     Gallery button: gallery
     Settings button: settings
-    */
+    */}
+
     @Override
     public void onStart() {
         super.onStart();
 
     }
+
     @Override
     public void onResume(){
         super.onResume();
@@ -153,19 +143,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case "Default":
                 themechange(0);
-                break;
-        }
-        String on_unplug = prefs.getString("headset_on_unplug", "Nothing");
-        switch (on_unplug) {
-            case "Nothing":
-                //do nothing
-                break;
-            case "Mute":
-                //Muteme;
-                //MuteManager.adjustSuggestedStreamVolume(AudioManager.ADJUST_LOWER,AudioManager.STREAM_MUSIC,100);
-                break;
-            case "Pause":
-                //Pauseme;
                 break;
         }
     }
@@ -253,21 +230,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-/*  this is alex's stuff for the mute and pause settings
-    public void onReceive(Context context, Intent intent) {
-
-        if (intent.hasExtra("state")){
-            if (headsetConnected && intent.getIntExtra("state", 0) == 0){
-                Music.setVolume((float) 0);
-                headsetConnected = false;
-
-            } else if (!headsetConnected && intent.getIntExtra("state", 0) == 1){
-                headsetConnected = true;
-                myActivity.music.setVolume((float) 1);
-            }
-        }
-    }
-*/
     public void connect(View view) {
         if(MyoIntent==null){
             MyoIntent = new Intent(this, BackgroundService.class);
@@ -289,21 +251,19 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, Music.class);
         startActivity(intent);
     }
-
     public void video(View view) {
         Intent intent = new Intent(MainActivity.this, Video.class);
         startActivity(intent);
     }
-
     public void gallery(View view) {
         Intent intent = new Intent(MainActivity.this, Gallery.class);
         startActivity(intent);
     }
-
     public void settings(View view) {
         Intent intent = new Intent(MainActivity.this, Settings.class);
         startActivity(intent);
     }
+
     @Override
     public void onStop() {
         super.onStop();

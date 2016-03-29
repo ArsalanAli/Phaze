@@ -1,9 +1,12 @@
 package teamb.minicap.phaze;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
 import android.content.ContentUris;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.media.AudioManager;
 import android.media.MediaMetadata;
 import android.media.MediaMetadataRetriever;
 import android.media.session.MediaController;
@@ -24,6 +27,7 @@ import java.util.Comparator;
 import android.net.Uri;
 import android.content.ContentResolver;
 import android.database.Cursor;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.os.IBinder;
 import android.content.ComponentName;
@@ -35,6 +39,7 @@ import android.view.View;
 import java.util.ArrayList;
 import teamb.minicap.phaze.Service_Music.MusicBinder;
 import android.widget.MediaController.MediaPlayerControl;
+import android.widget.Toast;
 
 import com.thalmic.myo.DeviceListener;
 import com.thalmic.myo.Myo;
@@ -54,6 +59,11 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
     private BackgroundService MyoSrvc;
     private Boolean MyoBound;
 
+    //stuff for audio volume control see alex if you want to change this
+    private SeekBar volumeSeekbar = null;
+    private AudioManager audioManager = null;
+    private PrivateHeadsetPlugReceiver plugReceiver;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +74,22 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
         trackList = new ArrayList<Tracks>();
 
         retrieveMedia();
+
+
+        //receiver for unplug pause/mute
+        plugReceiver = new PrivateHeadsetPlugReceiver();
+
+        //Default Volume
+        //this will make the audio level show up onscreen for debugging
+        //Toast.makeText(this, String.valueOf(vol), Toast.LENGTH_LONG).show();
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        int vol = prefs.getInt("defvolseekbar", 5);
+        setVolumeControlStream(audioManager.STREAM_MUSIC);
+        audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,
+                AudioManager.ADJUST_SAME, AudioManager.FLAG_SHOW_UI);
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, vol, AudioManager.FLAG_SHOW_UI);
 
         // This will be changed later in order to sort differently
         Collections.sort(trackList, new Comparator<Tracks>() {
@@ -319,6 +345,10 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
             setController();
             paused=false;
         }
+        //intent for headset status mute/pause
+        IntentFilter filter = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
+        registerReceiver(plugReceiver,filter);
+        Toast.makeText(this,"receiver registed",Toast.LENGTH_LONG).show();
     }
     @Override
     protected void onStop() {
@@ -326,4 +356,41 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
         super.onStop();
     }
 
+
+    //private class for handling the receiver for mute/pause
+    private class PrivateHeadsetPlugReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Toast.makeText(context,"received broadcast intent",Toast.LENGTH_LONG).show();
+
+            audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+            //Mute or Pause
+
+            String on_unplug = prefs.getString("headset_on_unplug", "Nothing");
+            switch (on_unplug) {
+                case "Nothing":
+                    //do nothing
+                    break;
+                case "Mute":
+                    if(!audioManager.isWiredHeadsetOn())
+                        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,0,AudioManager.FLAG_VIBRATE);
+                    Toast.makeText(context, "inside the mute branch", Toast.LENGTH_LONG).show();
+                    break;
+                case "Pause":
+                    if(!audioManager.isWiredHeadsetOn());
+                    Toast.makeText(context,"inside the pause branch", Toast.LENGTH_LONG).show();
+
+                    KeyEvent event1 = new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PAUSE);
+                    KeyEvent event2 = new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PAUSE);
+                    //controller.dispatchKeyEvent(event1);
+                    //controller.dispatchKeyEvent(event2);
+                    if (controller.dispatchKeyEvent(event1)){
+                        controller.dispatchKeyEvent(event2);
+                    }
+                    break;
+            }
+        }
+    }
 }
