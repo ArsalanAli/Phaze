@@ -177,7 +177,7 @@ public class Service_Music extends Service implements
         }
         else {
             songPosn++;
-            if (songPosn <= tracks.size()) songPosn = 0;
+            if (songPosn >= tracks.size()) songPosn = 0;
         }
         playSong();
     }

@@ -20,5 +20,4 @@ public class vids implements Serializable {
     public long getID(){return identification;}
     public String getTitle(){return title;}
     public int getTnail(){return Tnail;}
-
 }

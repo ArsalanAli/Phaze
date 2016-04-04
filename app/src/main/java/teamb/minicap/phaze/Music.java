@@ -13,9 +13,11 @@ import android.media.session.MediaController;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.widget.AdapterView;
@@ -39,10 +41,14 @@ import android.view.View;
 import java.util.ArrayList;
 import teamb.minicap.phaze.Service_Music.MusicBinder;
 import android.widget.MediaController.MediaPlayerControl;
+import android.widget.Switch;
 import android.widget.Toast;
 
+import com.thalmic.myo.AbstractDeviceListener;
 import com.thalmic.myo.DeviceListener;
+import com.thalmic.myo.Hub;
 import com.thalmic.myo.Myo;
+import com.thalmic.myo.Pose;
 
 
 public class Music extends AppCompatActivity implements MediaPlayerControl {
@@ -53,10 +59,13 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
     private Service_Music musicSrv;
     private Intent playIntent;
     private boolean musicBound = false;
+    private boolean Started;
     private MusicController controller;
     private boolean paused=false, playbackPaused=false;
     private Intent MyoIntent;
     private BackgroundService MyoSrvc;
+    private Hub hub;
+    private static final String TAG = "Music";
     private Boolean MyoBound;
 
     //stuff for audio volume control see alex if you want to change this
@@ -103,6 +112,7 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
 
         setController();
         playbackPaused=false;
+        Started = false;
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -185,7 +195,6 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
             bindService(MyoIntent, MyoConnection, Context.BIND_AUTO_CREATE);
             startService(MyoIntent);
         }
-
     }
 
     public void retrieveMedia(){
@@ -231,10 +240,10 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
         musicSrv.setSong(Integer.parseInt(view.getTag().toString()));
         musicSrv.playSong();
         if(playbackPaused){
-            setController();
             playbackPaused=false;
         }
         controller.show(0);
+        Started = true;
     }
     private  void setController(){
         controller = new MusicController(this);
@@ -305,7 +314,7 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
     @Override
     public boolean isPlaying() {
         if(musicSrv!=null && musicBound)
-        return musicSrv.isPng();
+            return musicSrv.isPng();
         return false;
     }
 
@@ -345,6 +354,8 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
             setController();
             paused=false;
         }
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                new IntentFilter("my-event"));
         //intent for headset status mute/pause
         IntentFilter filter = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
         registerReceiver(plugReceiver,filter);
@@ -355,6 +366,32 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
         controller.hide();
         super.onStop();
     }
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Extract data included in the Intent
+            String message = intent.getStringExtra("message");
+            Log.d("receiver", "Got message: " + message);
+            switch (message){
+                case "prev":
+                    playPrev();
+                    break;
+                case "next":
+                    playNext();
+                    break;
+                case "play/pause":
+                    if(playbackPaused){
+                        start();
+                    }
+                    else{
+                        pause();
+                    }
+                    break;
+                case "volume":
+                    break;
+            }
+        }
+    };
 
 
     //private class for handling the receiver for mute/pause

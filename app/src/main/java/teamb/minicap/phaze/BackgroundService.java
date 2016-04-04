@@ -7,10 +7,12 @@ package teamb.minicap.phaze;
 
 import android.app.Activity;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.media.session.MediaController;
 import android.os.Binder;
 import android.os.IBinder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -33,6 +35,7 @@ public class BackgroundService extends Service {
     private boolean locked;
     private boolean music;
     private boolean musicPlayStatus = true;
+    private Context currentCon;
     private boolean video;
     private boolean gallery;
     MusicController controller;
@@ -67,7 +70,7 @@ public class BackgroundService extends Service {
         @Override
         public void onPose(Myo myo, long timestamp, Pose pose) {
             // Show the name of the pose in a toast.
-
+            Intent intent = new Intent("my-event");
             switch(pose){
                 case DOUBLE_TAP:
                     if (myo.isUnlocked()) {
@@ -78,40 +81,38 @@ public class BackgroundService extends Service {
                     break;
                 case FIST:
                     if(!locked) {
-                       //if (music){
-                        //    showToast(pose.toString()+" Music");
-                        //}
-                        //else {
-                            showToast(pose.toString());
-                      //  }
+                        showToast(pose.toString());
+                        if (music){
+                            intent.putExtra("message", "volume");
+                            LocalBroadcastManager.getInstance(currentCon).sendBroadcast(intent);
+                        }
                     }
                     break;
                 case WAVE_IN:
                     if(!locked) {
                         showToast(pose.toString());
-//                        if (music)
-//                            musicSrv.playPrev();
+                        if (music){
+                            intent.putExtra("message", "prev");
+                            LocalBroadcastManager.getInstance(currentCon).sendBroadcast(intent);
+                        }
                     }
                     break;
                 case WAVE_OUT:
                     if(!locked) {
                         showToast(pose.toString());
-//                        if (music)
-//                            musicSrv.playNext();
+                        if (music){
+                            intent.putExtra("message", "next");
+                            LocalBroadcastManager.getInstance(currentCon).sendBroadcast(intent);
+                        }
                     }
                     break;
                 case FINGERS_SPREAD:
                     if(!locked) {
                         showToast(pose.toString());
-//                        if (music) {
-//                            if (musicPlayStatus) {
-//                                musicSrv.pausePlayer();
-//                                musicPlayStatus = false;
-//                            } else {
-//                                musicSrv.go();
-//                                musicPlayStatus = true;
-//                            }
-//                        }
+                        if (music) {
+                            intent.putExtra("message", "play/pause");
+                            LocalBroadcastManager.getInstance(currentCon).sendBroadcast(intent);
+                        }
                     }
                     break;
                 case REST:
@@ -146,10 +147,6 @@ public class BackgroundService extends Service {
         hub.setLockingPolicy(Hub.LockingPolicy.NONE);
         // Next, register for DeviceListener callbacks.
         hub.addListener(mListener);
-        // Finally, scan for Myo devices and connect to the first one found that is very near.
-        //hub.attachToAdjacentMyo();
-        //Intent intent = new Intent(this, ScanActivity.class);
-        //startActivity(intent);
     }
 
     @Override
@@ -191,6 +188,10 @@ public class BackgroundService extends Service {
 
     public void musicOn(){
         music = true;
+    }
+
+    public void setCurrentCon(Context c){
+        currentCon = c;
     }
 
     public void musicOff(){
