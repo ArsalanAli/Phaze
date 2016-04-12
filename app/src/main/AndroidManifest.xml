@@ -36,11 +36,10 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name=".PicView"
-            android:screenOrientation="portrait"></activity>
+        <activity android:name=".PicView"></activity>
 
         <activity android:name=".VideoPlayer"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="landscape"></activity>
 
     </application>
 

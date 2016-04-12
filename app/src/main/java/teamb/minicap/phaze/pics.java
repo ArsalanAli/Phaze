@@ -7,20 +7,19 @@ import java.io.Serializable;
 /**
  * Created by Kareem on 2016-03-25.
  */
-public class pics{
+public class pics implements Serializable{
     private long identification;
     private String title;
-    private Bitmap image;
+    private int image;
 
-    public pics(long ID, String Name, Bitmap img){
+    public pics(long ID, String Name, int img){
         super();
         image = img;
         identification = ID;
         title = Name;
     }
-    public Bitmap getImage(){ return image;}
     public long getID(){return identification;}
     public String getTitle(){return title;}
-    public void setImage(Bitmap image){this.image = image;}
+    public int getImg(){return image;}
 
 }

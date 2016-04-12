@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.media.session.MediaController;
 import android.os.Binder;
 import android.os.IBinder;
@@ -35,10 +36,10 @@ public class BackgroundService extends Service {
     private boolean locked;
     private boolean music;
     private boolean musicPlayStatus = true;
+    private boolean volume;
     private Context currentCon;
-    private boolean video;
-    private boolean gallery;
     MusicController controller;
+    private AudioManager audioManager = null;
 
     // Classes that inherit from AbstractDeviceListener can be used to receive events from Myo devices.
     // If you do not override an event, the default behavior is to do nothing.
@@ -82,37 +83,45 @@ public class BackgroundService extends Service {
                 case FIST:
                     if(!locked) {
                         showToast(pose.toString());
-                        if (music){
-                            intent.putExtra("message", "volume");
-                            LocalBroadcastManager.getInstance(currentCon).sendBroadcast(intent);
+                        if(volume){
+                            volume = false;
+                        }
+                        else{
+                            volume = true;
                         }
                     }
                     break;
                 case WAVE_IN:
                     if(!locked) {
                         showToast(pose.toString());
-                        if (music){
+                        if(!volume) {
                             intent.putExtra("message", "prev");
                             LocalBroadcastManager.getInstance(currentCon).sendBroadcast(intent);
+                        }
+                        else{
+                            audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,
+                                    AudioManager.ADJUST_LOWER, AudioManager.FLAG_SHOW_UI);
                         }
                     }
                     break;
                 case WAVE_OUT:
                     if(!locked) {
                         showToast(pose.toString());
-                        if (music){
+                        if(!volume) {
                             intent.putExtra("message", "next");
                             LocalBroadcastManager.getInstance(currentCon).sendBroadcast(intent);
+                        }
+                        else{
+                            audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,
+                                    AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
                         }
                     }
                     break;
                 case FINGERS_SPREAD:
                     if(!locked) {
                         showToast(pose.toString());
-                        if (music) {
-                            intent.putExtra("message", "play/pause");
-                            LocalBroadcastManager.getInstance(currentCon).sendBroadcast(intent);
-                        }
+                        intent.putExtra("message", "play/pause");
+                        LocalBroadcastManager.getInstance(currentCon).sendBroadcast(intent);
                     }
                     break;
                 case REST:
@@ -147,6 +156,8 @@ public class BackgroundService extends Service {
         hub.setLockingPolicy(Hub.LockingPolicy.NONE);
         // Next, register for DeviceListener callbacks.
         hub.addListener(mListener);
+        volume = false;
+        audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
     }
 
     @Override

@@ -28,6 +28,7 @@ import java.util.Comparator;
 public class Gallery extends AppCompatActivity {
     private ArrayList<pics> picsList;
     private ListView picsView;
+    private ArrayList<Bitmap> Tnails;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,10 +43,11 @@ public class Gallery extends AppCompatActivity {
         }
         picsView = (ListView) findViewById(R.id.picsView);
         picsList = new ArrayList<pics>();
+        Tnails = new ArrayList<Bitmap>();
 
         retrieveMedia();
 
-        picsAdapter picsAdapter = new picsAdapter(this, picsList);
+        picsAdapter picsAdapter = new picsAdapter(this, picsList, Tnails);
         picsView.setAdapter(picsAdapter);
 
         Collections.sort(picsList, new Comparator<pics>() {
@@ -79,7 +81,8 @@ public class Gallery extends AppCompatActivity {
                 Bitmap bitmap = BitmapFactory.decodeFile(pictureCursor.getString(
                         pictureCursor.getColumnIndex(MediaStore.Images.Media.DATA)),options);
                 Bitmap resized = Bitmap.createScaledBitmap(bitmap,500,500,true);
-                picsList.add(new pics(thisId, thisTitle, resized));
+                picsList.add(new pics(thisId, thisTitle, pictureCursor.getPosition()));
+                Tnails.add(resized);
             }
             while (pictureCursor.moveToNext());
         }

@@ -387,8 +387,6 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
                         pause();
                     }
                     break;
-                case "volume":
-                    break;
             }
         }
     };

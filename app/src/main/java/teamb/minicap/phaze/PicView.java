@@ -1,6 +1,7 @@
 package teamb.minicap.phaze;
 
 import android.content.ContentUris;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;

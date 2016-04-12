@@ -2,6 +2,7 @@ package teamb.minicap.phaze;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,10 +21,12 @@ public class picsAdapter extends BaseAdapter {
 
     private ArrayList<pics> pictures;
     private LayoutInflater details;
+    private ArrayList<Bitmap> Tnails;
 
-    public picsAdapter(Context c, ArrayList<pics> images) {
+    public picsAdapter(Context c, ArrayList<pics> images, ArrayList<Bitmap> nails) {
         pictures = images;
         details = LayoutInflater.from(c);
+        Tnails = nails;
     }
 
     @Override
@@ -47,7 +50,7 @@ public class picsAdapter extends BaseAdapter {
                 (R.layout.pics, parent, false);
         ImageView image = (ImageView) picsLayout.findViewById(R.id.images);
         pics current = pictures.get(position);
-        image.setImageBitmap(current.getImage());
+        image.setImageBitmap(Tnails.get(current.getImg()));
         picsLayout.setTag(position);
         return picsLayout;
     }
