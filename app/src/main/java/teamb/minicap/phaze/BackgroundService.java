@@ -23,6 +23,7 @@ import com.thalmic.myo.DeviceListener;
 import com.thalmic.myo.Hub;
 import com.thalmic.myo.Myo;
 import com.thalmic.myo.Pose;
+import com.thalmic.myo.Quaternion;
 import com.thalmic.myo.XDirection;
 
 
@@ -37,6 +38,10 @@ public class BackgroundService extends Service {
     private boolean music;
     private boolean musicPlayStatus = true;
     private boolean volume;
+    private boolean fist=false;
+    private float initial_roll;
+    private float initial_pitch;
+    private boolean not_first_data=false;
     private Context currentCon;
     MusicController controller;
     private AudioManager audioManager = null;
@@ -44,6 +49,7 @@ public class BackgroundService extends Service {
     // Classes that inherit from AbstractDeviceListener can be used to receive events from Myo devices.
     // If you do not override an event, the default behavior is to do nothing.
     private DeviceListener mListener = new AbstractDeviceListener() {
+        private XDirection mXDirection = XDirection.UNKNOWN;
         @Override
         public void onConnect(Myo myo, long timestamp) {
             String Connected = getString(R.string.connected) + myo.getName();
@@ -99,8 +105,8 @@ public class BackgroundService extends Service {
                             LocalBroadcastManager.getInstance(currentCon).sendBroadcast(intent);
                         }
                         else{
-                            audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,
-                                    AudioManager.ADJUST_LOWER, AudioManager.FLAG_SHOW_UI);
+                            intent.putExtra("message", "rewind");
+                            LocalBroadcastManager.getInstance(currentCon).sendBroadcast(intent);
                         }
                     }
                     break;
@@ -112,8 +118,8 @@ public class BackgroundService extends Service {
                             LocalBroadcastManager.getInstance(currentCon).sendBroadcast(intent);
                         }
                         else{
-                            audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,
-                                    AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
+                            intent.putExtra("message", "forward");
+                            LocalBroadcastManager.getInstance(currentCon).sendBroadcast(intent);
                         }
                     }
                     break;
@@ -128,6 +134,46 @@ public class BackgroundService extends Service {
                     break;
                 case UNKNOWN:
                     break;
+            }
+        }
+
+        @Override
+        public void onOrientationData(Myo myo, long timestamp, Quaternion rotation) {
+
+            if(fist){
+                float roll =(float) Math.toDegrees(Quaternion.roll(rotation));
+                float pitch = (float) Math.toDegrees(Quaternion.pitch(rotation));
+
+                if (myo.getXDirection() == XDirection.TOWARD_ELBOW) {
+                    roll *= -1;
+                    pitch *= -1;
+                }
+
+                if(not_first_data){
+                    initial_roll=roll;
+                    not_first_data=true;
+                    initial_pitch =pitch;
+                }
+                else{
+                    float rotation_angle = roll - initial_roll;
+                    if(Math.abs(rotation_angle)>=10){
+
+                        if(rotation_angle>0){
+                            audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,
+                                    AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
+
+                            initial_roll=roll;
+                            initial_pitch=pitch;
+                        }
+                        else{
+                            audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,
+                                    AudioManager.ADJUST_LOWER, AudioManager.FLAG_SHOW_UI);
+
+                            initial_roll=roll;
+                            initial_pitch=pitch;
+                        }
+                    }
+                }
             }
         }
     };

@@ -53,7 +53,6 @@ import com.thalmic.myo.Pose;
 
 public class Music extends AppCompatActivity implements MediaPlayerControl {
 
-
     private ArrayList<Tracks> trackList;
     private ListView trackView;
     private Service_Music musicSrv;
@@ -295,14 +294,14 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
     @Override
     public int getDuration() {
         if(musicSrv!=null && musicBound && musicSrv.isPng())
-        return musicSrv.getDur();
+            return musicSrv.getDur();
         else return 0;
     }
 
     @Override
     public int getCurrentPosition() {
         if(musicSrv!=null && musicBound && musicSrv.isPng())
-        return musicSrv.getSongPosn();
+            return musicSrv.getSongPosn();
         else return 0;
     }
 
@@ -358,7 +357,7 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
                 new IntentFilter("my-event"));
         //intent for headset status mute/pause
         IntentFilter filter = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
-        registerReceiver(plugReceiver,filter);
+        registerReceiver(plugReceiver, filter);
         Toast.makeText(this,"receiver registed",Toast.LENGTH_LONG).show();
     }
     @Override
@@ -366,6 +365,28 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
         controller.hide();
         super.onStop();
     }
+
+    public void forwardSong() {
+        KeyEvent event1 = new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_FAST_FORWARD);
+        KeyEvent event2 = new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_FAST_FORWARD);
+        controller.dispatchKeyEvent(event1);
+        controller.dispatchKeyEvent(event2);
+        /*if (controller.dispatchKeyEvent(event1)){
+            controller.dispatchKeyEvent(event2);
+        }*/
+
+    }
+
+    public void BackwardSong() {
+        KeyEvent event1 = new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_REWIND);
+        KeyEvent event2 = new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_REWIND);
+        controller.dispatchKeyEvent(event1);
+        controller.dispatchKeyEvent(event2);
+        if (controller.dispatchKeyEvent(event1)){
+            controller.dispatchKeyEvent(event2);
+        }
+    }
+
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -386,6 +407,12 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
                     else{
                         pause();
                     }
+                    break;
+                case "forward":
+                    forwardSong();
+                    break;
+                case "rewind":
+                    BackwardSong();
                     break;
             }
         }

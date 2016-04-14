@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.MediaController;
 import android.net.Uri;
@@ -23,6 +24,8 @@ public class VideoPlayer extends AppCompatActivity {
     private ArrayList<vids> vidsList;
     private int currVid;
     private VideoView video;
+    private MusicController controller;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,10 +81,32 @@ public class VideoPlayer extends AppCompatActivity {
     public void playPrev(){
         currVid--;
         if (currVid < 0 ){
-            currVid = vidsList.size()-1;
+            currVid = vidsList.size() - 1;
         }
         playVideo(vidsList.get(currVid).getID());
     }
+
+    public void FastForward() {
+        KeyEvent event1 = new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_FAST_FORWARD);
+        KeyEvent event2 = new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_FAST_FORWARD);
+        controller.dispatchKeyEvent(event1);
+        controller.dispatchKeyEvent(event2);
+        /*if (controller.dispatchKeyEvent(event1)){
+            controller.dispatchKeyEvent(event2);
+        }*/
+
+    }
+
+    public void Rewind() {
+        KeyEvent event1 = new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_REWIND);
+        KeyEvent event2 = new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_REWIND);
+        controller.dispatchKeyEvent(event1);
+        controller.dispatchKeyEvent(event2);
+        if (controller.dispatchKeyEvent(event1)){
+            controller.dispatchKeyEvent(event2);
+        }
+    }
+
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
     public void onReceive(Context context, Intent intent) {
@@ -97,7 +122,7 @@ public class VideoPlayer extends AppCompatActivity {
                 break;
             case "play/pause":
                 if(video.isPlaying()){
-                   video.pause();
+                    video.pause();
                 }
                 else{
                     int currentpos = video.getCurrentPosition();
@@ -105,7 +130,13 @@ public class VideoPlayer extends AppCompatActivity {
                     video.seekTo(currentpos);
                 }
                 break;
-        }
+            case "forward":
+                FastForward();
+                break;
+            case "rewind":
+                Rewind();
+                break;
+            }
         }
     };
 }
