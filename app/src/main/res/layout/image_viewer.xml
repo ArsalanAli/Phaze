@@ -30,4 +30,12 @@
         android:layout_alignTop="@+id/imageView"
         android:layout_alignParentStart="true" />
 
+    <ZoomControls
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/zoomControls"
+        android:layout_alignBottom="@+id/nextBtn"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal" />
+
 </RelativeLayout>
