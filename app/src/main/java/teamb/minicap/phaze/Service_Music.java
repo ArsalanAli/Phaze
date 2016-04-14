@@ -92,6 +92,8 @@ public class Service_Music extends Service implements
 
     @Override
     public void onPrepared(MediaPlayer mp) {
+        if(mp.isPlaying())
+            mp.stop();
         mp.start();
         Intent notIntent = new Intent(this, MainActivity.class);
         notIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

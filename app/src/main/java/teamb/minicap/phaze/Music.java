@@ -283,6 +283,7 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
     @Override
     public void start() {
         musicSrv.go();
+        playbackPaused = false;
     }
 
     @Override
