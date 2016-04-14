@@ -201,7 +201,8 @@ public class BackgroundService extends Service {
                                 initial_pitch = pitch;
 
                                 intent.putExtra("message", "zoomOut");
-                                LocalBroadcastManager.getInstance(currentCon).sendBroadcast(intent);                            }
+                                LocalBroadcastManager.getInstance(currentCon).sendBroadcast(intent);
+                            }
                         }
                     }
                 }
