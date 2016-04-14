@@ -26,6 +26,12 @@ public class PicView extends AppCompatActivity {
     private ImageView pictures;
     private float x;
     private float y;
+    private static final float  X_MAX_VALUE = 8;
+    private static final float  Y_MAX_VALUE = 8;
+    private static final float  X_MIN_VALUE = 1;
+    private static final float  Y_MIN_VALUE = 1;
+    private int mShortAnimationDuration;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,14 +102,18 @@ public class PicView extends AppCompatActivity {
                 case "zoomIn":
                     x = pictures.getScaleX();
                     y = pictures.getScaleY();
-                    pictures.setScaleX(x + 1);
-                    pictures.setScaleY(y+1);
+                    if ( x != X_MAX_VALUE && y != Y_MAX_VALUE) {
+                        pictures.setScaleX(x + 1);
+                        pictures.setScaleY(y + 1);
+                    }
                     break;
                 case "zoomOut":
                     x = pictures.getScaleX();
                     y = pictures.getScaleY();
-                    pictures.setScaleX(x-1);
-                    pictures.setScaleY(y-1);
+                    if ( x != X_MIN_VALUE && y != Y_MIN_VALUE) {
+                        pictures.setScaleX(x - 1);
+                        pictures.setScaleY(y - 1);
+                    }
                     break;
             }
 

@@ -190,10 +190,16 @@ public class BackgroundService extends Service {
                         }
                         else{
                             if (rotation_angle > 0){
+                                initial_roll = roll;
+                                initial_pitch = pitch;
+
                                 intent.putExtra("message", "zoomIn");
                                 LocalBroadcastManager.getInstance(currentCon).sendBroadcast(intent);
                             }
                             else{
+                                initial_roll = roll;
+                                initial_pitch = pitch;
+
                                 intent.putExtra("message", "zoomOut");
                                 LocalBroadcastManager.getInstance(currentCon).sendBroadcast(intent);                            }
                         }
