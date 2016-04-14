@@ -72,6 +72,7 @@ public class PicView extends AppCompatActivity {
                 case "play/pause":
                     break;
             }
+
         }
     };
 
