@@ -84,28 +84,28 @@ public class VideoPlayer extends AppCompatActivity {
     }
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
-        public void onReceive(Context context, Intent intent) {
-            // Extract data included in the Intent
-            String message = intent.getStringExtra("message");
-            Log.d("receiver", "Got message: " + message);
-            switch (message){
-                case "prev":
-                    playPrev();
-                    break;
-                case "next":
-                    playNext();
-                    break;
-                case "play/pause":
-                    if(video.isPlaying()){
-                       video.pause();
-                    }
-                    else{
-                        int currentpos = video.getCurrentPosition();
-                        video.start();
-                        video.seekTo(currentpos);
-                    }
-                    break;
-            }
+    public void onReceive(Context context, Intent intent) {
+        // Extract data included in the Intent
+        String message = intent.getStringExtra("message");
+        Log.d("receiver", "Got message: " + message);
+        switch (message){
+            case "prev":
+                playPrev();
+                break;
+            case "next":
+                playNext();
+                break;
+            case "play/pause":
+                if(video.isPlaying()){
+                   video.pause();
+                }
+                else{
+                    int currentpos = video.getCurrentPosition();
+                    video.start();
+                    video.seekTo(currentpos);
+                }
+                break;
+        }
         }
     };
 }

@@ -46,8 +46,7 @@ public class picsAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        LinearLayout picsLayout = (LinearLayout) details.inflate
-                (R.layout.pics, parent, false);
+        LinearLayout picsLayout = (LinearLayout) details.inflate(R.layout.pics, parent, false);
         ImageView image = (ImageView) picsLayout.findViewById(R.id.images);
         pics current = pictures.get(position);
         image.setImageBitmap(Tnails.get(current.getImg()));

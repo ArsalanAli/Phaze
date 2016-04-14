@@ -93,4 +93,6 @@ public class Gallery extends AppCompatActivity {
         intent.putExtra("location", Integer.parseInt(view.getTag().toString()));
         startActivity(intent);
     }
+
+
 }
