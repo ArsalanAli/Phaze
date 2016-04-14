@@ -78,6 +78,14 @@ public class BackgroundService extends Service {
         public void onPose(Myo myo, long timestamp, Pose pose) {
             // Show the name of the pose in a toast.
             Intent intent = new Intent("my-event");
+
+            if (pose.equals(Pose.FIST)) {
+                fist = true;
+            } else {
+                fist = false;
+                not_first_data = false;
+            }
+
             switch(pose){
                 case DOUBLE_TAP:
                     if (myo.isUnlocked()) {
@@ -146,7 +154,7 @@ public class BackgroundService extends Service {
 
                 if (myo.getXDirection() == XDirection.TOWARD_ELBOW) {
                     roll *= -1;
-                    pitch *= -1;
+                   pitch *= -1;
                 }
 
                 if(not_first_data){
