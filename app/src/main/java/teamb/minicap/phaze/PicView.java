@@ -42,6 +42,28 @@ public class PicView extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
                 new IntentFilter("my-event"));
 
+        final Button nextButton = (Button) findViewById(R.id.nextBtn);
+        nextButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                currPic += 1;
+                if (currPic > picsList.size()-1)
+                    currPic = 0;
+                displayPicture(picsList.get(currPic).getID());
+            }
+        });
+
+        final Button prevButton = (Button) findViewById(R.id.prevBtn);
+        prevButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                currPic -= 1;
+                if (currPic < 0)
+                    currPic = picsList.size()-1;
+                displayPicture(picsList.get(currPic).getID());
+            }
+        });
+
     }
 
     public void displayPicture(long id) {
