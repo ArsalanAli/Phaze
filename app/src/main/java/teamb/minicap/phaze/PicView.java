@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ZoomButton;
 
 
 import java.util.ArrayList;
@@ -23,7 +24,8 @@ public class PicView extends AppCompatActivity {
     private ArrayList<pics> picsList;
     private int currPic;
     private ImageView pictures;
-    private int arraySize;
+    private float x;
+    private float y;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +93,17 @@ public class PicView extends AppCompatActivity {
                         currPic = 0;
                     displayPicture(picsList.get(currPic).getID());
                     break;
-                case "play/pause":
+                case "zoomIn":
+                    x = pictures.getScaleX();
+                    y = pictures.getScaleY();
+                    pictures.setScaleX(x + 1);
+                    pictures.setScaleY(y+1);
+                    break;
+                case "zoomOut":
+                    x = pictures.getScaleX();
+                    y = pictures.getScaleY();
+                    pictures.setScaleX(x-1);
+                    pictures.setScaleY(y-1);
                     break;
             }
 

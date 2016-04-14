@@ -15,6 +15,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
 import com.thalmic.myo.AbstractDeviceListener;
@@ -38,6 +39,7 @@ public class BackgroundService extends Service {
     private boolean music;
     private boolean musicPlayStatus = true;
     private boolean volume;
+    private boolean zoom;
     private boolean fist=false;
     private float initial_roll;
     private float initial_pitch;
@@ -45,6 +47,7 @@ public class BackgroundService extends Service {
     private Context currentCon;
     MusicController controller;
     private AudioManager audioManager = null;
+    private ImageView pictures;
 
     // Classes that inherit from AbstractDeviceListener can be used to receive events from Myo devices.
     // If you do not override an event, the default behavior is to do nothing.
@@ -99,10 +102,13 @@ public class BackgroundService extends Service {
                         showToast(pose.toString());
                         if(volume){
                             volume = false;
+                            zoom = true;
                         }
                         else{
                             volume = true;
+                            zoom = false;
                         }
+
                     }
                     break;
                 case WAVE_IN:
@@ -148,6 +154,8 @@ public class BackgroundService extends Service {
         @Override
         public void onOrientationData(Myo myo, long timestamp, Quaternion rotation) {
 
+            Intent intent = new Intent("my-event");
+
             if(fist){
                 float roll =(float) Math.toDegrees(Quaternion.roll(rotation));
                 float pitch = (float) Math.toDegrees(Quaternion.pitch(rotation));
@@ -165,20 +173,29 @@ public class BackgroundService extends Service {
                 else{
                     float rotation_angle = roll - initial_roll;
                     if(Math.abs(rotation_angle)>=10){
+                        if(volume) {
+                            if (rotation_angle > 0) {
+                                audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,
+                                        AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
 
-                        if(rotation_angle>0){
-                            audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,
-                                    AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
+                                initial_roll = roll;
+                                initial_pitch = pitch;
+                            } else {
+                                audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,
+                                        AudioManager.ADJUST_LOWER, AudioManager.FLAG_SHOW_UI);
 
-                            initial_roll=roll;
-                            initial_pitch=pitch;
+                                initial_roll = roll;
+                                initial_pitch = pitch;
+                            }
                         }
                         else{
-                            audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,
-                                    AudioManager.ADJUST_LOWER, AudioManager.FLAG_SHOW_UI);
-
-                            initial_roll=roll;
-                            initial_pitch=pitch;
+                            if (rotation_angle > 0){
+                                intent.putExtra("message", "zoomIn");
+                                LocalBroadcastManager.getInstance(currentCon).sendBroadcast(intent);
+                            }
+                            else{
+                                intent.putExtra("message", "zoomOut");
+                                LocalBroadcastManager.getInstance(currentCon).sendBroadcast(intent);                            }
                         }
                     }
                 }
