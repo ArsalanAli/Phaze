@@ -367,24 +367,18 @@ public class Music extends AppCompatActivity implements MediaPlayerControl {
     }
 
     public void forwardSong() {
-        KeyEvent event1 = new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_FAST_FORWARD);
-        KeyEvent event2 = new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_FAST_FORWARD);
-        controller.dispatchKeyEvent(event1);
-        controller.dispatchKeyEvent(event2);
-        /*if (controller.dispatchKeyEvent(event1)){
-            controller.dispatchKeyEvent(event2);
-        }*/
+        int pos = getCurrentPosition()+20000;
+        if (pos > getDuration())
+            pos = getDuration();
+        seekTo(pos);
 
     }
 
     public void BackwardSong() {
-        KeyEvent event1 = new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_REWIND);
-        KeyEvent event2 = new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_REWIND);
-        controller.dispatchKeyEvent(event1);
-        controller.dispatchKeyEvent(event2);
-        if (controller.dispatchKeyEvent(event1)){
-            controller.dispatchKeyEvent(event2);
-        }
+        int pos = getCurrentPosition()-20000;
+        if (pos < 0)
+            pos = 0;
+        seekTo(pos);
     }
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {

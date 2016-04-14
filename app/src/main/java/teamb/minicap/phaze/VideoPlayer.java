@@ -87,24 +87,18 @@ public class VideoPlayer extends AppCompatActivity {
     }
 
     public void FastForward() {
-        KeyEvent event1 = new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_FAST_FORWARD);
-        KeyEvent event2 = new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_FAST_FORWARD);
-        controller.dispatchKeyEvent(event1);
-        controller.dispatchKeyEvent(event2);
-        /*if (controller.dispatchKeyEvent(event1)){
-            controller.dispatchKeyEvent(event2);
-        }*/
+        int pos = video.getCurrentPosition()+20000;
+        if (pos > video.getDuration())
+            pos = video.getDuration();
+        video.seekTo(pos);
 
     }
 
     public void Rewind() {
-        KeyEvent event1 = new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_REWIND);
-        KeyEvent event2 = new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_REWIND);
-        controller.dispatchKeyEvent(event1);
-        controller.dispatchKeyEvent(event2);
-        if (controller.dispatchKeyEvent(event1)){
-            controller.dispatchKeyEvent(event2);
-        }
+        int pos = video.getCurrentPosition()-20000;
+        if (pos < 0)
+            pos = 0;
+        video.seekTo(pos);
     }
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
