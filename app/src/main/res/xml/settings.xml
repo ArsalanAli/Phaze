@@ -25,12 +25,13 @@
         android:entryValues="@array/unplug"
         />
     <SeekBarPreference
+        android:key="fadeseekbar"
         android:title="Fade in/out (ms)"
         android:summary="The length of the fade in/fade out time in milliseconds"
         android:id="@+id/fadeseekbar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:max="1000"
+        android:max="5000"
         />
     <SeekBarPreference
         android:key="defvolseekbar"
